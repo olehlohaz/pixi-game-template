@@ -38,4 +38,4 @@ default entry:
 - game ->  ['./app/app.js'] (create the file)-> game.js
 
 
-Note: Template originaly based on Pixi-Seed (https://github.com/edwinwebb/pixi-seed)
+Note: Template based on Pixi-Seed (https://github.com/edwinwebb/pixi-seed)
