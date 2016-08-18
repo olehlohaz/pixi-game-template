@@ -26,12 +26,6 @@ class StateManager extends WebGLRenderer {
     
   }
 
-
-  /**
-   * initialize renderer, set values and resize canvas
-   * @param {stageWidth} width of the canvas element
-   * @param {stageHeight} height of the canvas element
-   */
   init (stageWidth, stageHeight) {
 
     this.resize( stageWidth, stageHeight )
@@ -54,9 +48,6 @@ class StateManager extends WebGLRenderer {
 
   }
 
-  /**
-   *  Resize canvas, Sets's store and emits Change
-   */
   resizeHandler () {
     
     window.scrollTo(0,1)
@@ -78,26 +69,16 @@ class StateManager extends WebGLRenderer {
     Renderer.emitChange()
   }
 
-  /**
-   * Start the animation loop
-   * @return {null}
-   */
   start () {
     this.active = true
     window.requestAnimationFrame( () => this.animate() )
   }
 
-  /**
-   * Stop the animation loop
-   * @return {null}
-   */
+
   stop () {
     this.active = false
   }
 
-  /**
-   * Main animation loop, updates animation store
-   */
   animate () {
     this.renderStates()
 
@@ -107,11 +88,7 @@ class StateManager extends WebGLRenderer {
     }
   }
 
-  /**
-   * Add a renderable object to the list. After add to the list it can be set as current using setRenderable
-   * @param {key} renderable name
-   * @param {renderable} renderable object
-   */
+
   addState ( key, state ) {
     this.states.set( key, state )
   }
@@ -163,23 +140,17 @@ class StateManager extends WebGLRenderer {
 
   fadeToState (state, fromValue = 0, toValue = 1, time=1000, delay = 0) {
     
-    console.log(state, fromValue, toValue, time)
-
     state.alpha = fromValue
     const tweenOld = new Tween( state )
     tweenOld.delay(delay).to( {alpha: toValue}, time )
     tweenOld.start()
 
     return tweenOld
+
   }
 
-  /**
-   * Render currentRenderable if there is one and call the render function
-   */
   renderStates() {
-
     this.render( this.stageContainer )
-
   }
 }
 

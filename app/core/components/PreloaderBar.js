@@ -1,17 +1,10 @@
 import Renderer from '../controllers/RendererManager'
-import Utils from '../utils/Utils'
 import Tween from '../effects/Tween'
 
-import { Container, Sprite, Graphics } from 'pixi.js'
+import { Container, Graphics } from 'pixi.js'
 
 
-/**
- * Preloader Bar
- * Create a preloader bar and animate the progress
- *
- * @exports PreloaderBar
- * @extends Container
- */
+
 export default class PreloaderBar extends Container {
 
   constructor() {

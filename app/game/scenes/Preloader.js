@@ -1,19 +1,11 @@
 import PreloaderBar       from '../../core/components/PreloaderBar'
 import StateManager       from '../../core/controllers/StateManager'
 import Sound              from '../../core/controllers/SoundManager'
-import RendererStore      from '../../core/controllers/RendererManager'
-import Utils              from '../../core/utils/Utils'
 import Game               from './Game'
 
 import { loader, Sprite }       from 'pixi.js'
-/**
- * Preloader Class
- *
- * Add a preloader bar and load all assets and sound files
- *
- * @exports Preloader
- * @extends PIXI.Container
- */
+
+
 export default class Preloader extends PIXI.Container {
 
   constructor () {
@@ -28,9 +20,6 @@ export default class Preloader extends PIXI.Container {
     
   }
 
-  /**
-   * initialize function. Called by the renderer when it's set to active
-   */
   init() {
 
     this.preloaderBar = new PreloaderBar()
@@ -50,18 +39,14 @@ export default class Preloader extends PIXI.Container {
     // SoundStore.load()
   }
 
-  /**
-   * mark audio as loaded and check if all assets are loaded too
-   */
+
   onLoadAudioComplete () {
 
     this.audioLoaded = true
     this.checkForLoadComplete()
 
   }
-  /**
-   * mark data as loaded and check for audio
-   */
+
   onLoaderComplete (data, file) {
     
     this.initGame()
@@ -72,20 +57,14 @@ export default class Preloader extends PIXI.Container {
     StateManager.switchFade( 'Game', 2000 )
   }
 
-  /**
-   * check if audio and data are loaded and change renderable to MainMenu
-   */
   checkForLoadComplete() {
     if(!this.dataLoaded || !this.audioLoaded) {
       return;
     }
 
-    // StateManager.setActive( 'MainMenu' )
   }
 
-  /**
-   * update progress bar as files are loaded
-   */
+
   onLoaderProgress (loader, resource) {
     
     this.preloaderBar.setProgress(loader.progress)

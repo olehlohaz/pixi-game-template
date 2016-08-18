@@ -1,17 +1,7 @@
 import { utils, loader }  from 'pixi.js'
 import { EVENTS } from '../Constants'
 
-/**
- * Animation Store
- *
- * Manages a few aspects of the animation loop and provides callbacks
- * for things such as Tween.js
- *
- * @data
- * 	tick : number of times render has been called
- * 	startTime : float ms of animation time start
- * 	currentTime : current float ms
- */
+
 class AnimationManager extends utils.EventEmitter {
 
   constructor() {

@@ -1,17 +1,7 @@
 import { utils, loader }  from 'pixi.js'
 import { EVENTS } from '../Constants'
 
-/**
- * Render Store
- * Keeps render variables
- *
- * @data
- * 	width : window width
- * 	height : window height
- * 	stage : stage width and height
- * 	stageCenter : center point of stage
- * 	resolution : display density
- */
+
 class RendererManager extends utils.EventEmitter {
 
   constructor() {

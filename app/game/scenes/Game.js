@@ -11,8 +11,7 @@ export default class Game extends Container {
 
   init () {
 
-    // let background = new Background()
-    // this.addChild( background )
+
 
   }
 }

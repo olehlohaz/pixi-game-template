@@ -1,11 +1,9 @@
 import { utils, loader }  from 'pixi.js'
 import { Howler, Howl }   from 'howler'
 import { AUDIO_LOADED }   from '../Constants'
-/**
- * Sound Store
- * Responsible to load, and play sounds of the audiosprite
- *
- */
+
+
+
 class SoundManager extends utils.EventEmitter {
 
   constructor() {
@@ -23,16 +21,12 @@ class SoundManager extends utils.EventEmitter {
 
   }
 
-  /**
-   * Start to load the audio files, used during the preloader phase.
-   */
+
   load () {
     this.sfx.load()
   }
 
-  /**
-   * Convert json data created using audiosprite to a Howler compatible format
-   */
+
   setupAudiosprite() {
     let rawSprites = loader.resources['audiosprite'].data.spritemap
     
@@ -56,11 +50,7 @@ class SoundManager extends utils.EventEmitter {
     ];
   }
 
-  /**
-   * Play audiosprite
-   * @param {string} Name of the audio sprite
-   * @return {number} id of the audio
-   */
+
   play (name, volume) {
     if( !this.isSpriteDefined ) {
       this.setupAudiosprite()
@@ -71,24 +61,16 @@ class SoundManager extends utils.EventEmitter {
 
     return soundId;
   }
-  /**
-   * Stop Audio
-   * @param {number} ID of the audio
-   */
+
   stop (id) {
     this.sfx.stop( id )
   }
 
-  /**
-   * Dispatched after finishes load the audio
-   */
+
   onLoadComplete() {
     this.emit(AUDIO_LOADED, this.sfx)
   }
 
-  /**
-   * Add function to listen to load complete event. Used during the preloader
-   */
   addLoadListener ( callback, callbackContext ) {
     this.on(AUDIO_LOADED, callback, callbackContext, this.sfx)
   }

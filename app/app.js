@@ -11,9 +11,9 @@ import {config}         from '../package.json'
 import StateManager     from './core/controllers/StateManager'
 import Preloader        from './game/scenes/Preloader'
 import Game             from './game/scenes/Game'
-import PIXI       		from 'pixi.js'
+import {loader}       	from 'pixi.js'
 
-StateManager.init(config.stageWidth, config.stageHeight)
+StateManager.init( config.stageWidth, config.stageHeight )
 
 const preloader = new Preloader()
 const game      = new Game()
@@ -21,12 +21,11 @@ const game      = new Game()
 StateManager.addState( 'Game', game )
 StateManager.addState( 'Preloader', preloader )
 
-PIXI.loader.add('preloader', 'assets/preloader.json').load(setup)
+// loader.add('preloader', 'assets/preloader.json').load(setup)
 
-
-function setup () { 
-  
+function setup() { 
   StateManager.setActive( 'Preloader' )
-  StateManager.start()
-  
+  StateManager.start()  
 }
+
+setup()

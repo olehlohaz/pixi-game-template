@@ -18,10 +18,8 @@ export default class ParticleEmitter extends Container {
 
     for( const [frame, texture] of imageList.entries() ) {
       assets.push( Utils.getTexture( texture, frame ) )
-      // console.log(key, value, Utils.getTexture( key, value ) )
     }
 
-    // Create the new emitter and attach it to the stage
     const emitterContainer = new ParticleContainer(5000, {
       scale: true,
       position: true,
@@ -40,15 +38,12 @@ export default class ParticleEmitter extends Container {
       config
     )
 
-    // Center on the stage
     this.emitter.updateOwnerPos(window.innerWidth / 2, window.innerHeight / 2)
-
 
     Animation.addEventListener( () => this.update() )
 
   }
 
-  // Update function every frame
   update() {
 
     const now = Date.now()
