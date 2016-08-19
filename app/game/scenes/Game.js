@@ -12,6 +12,11 @@ export default class Game extends Container {
   init () {
 
 
+  	const text = new extras.BitmapText('Hello World!', { font: '40px SaranaiGame-Bold', align: 'center' })
+  	text.position.set( Renderer.center.x - text.textWidth*0.5, Renderer.center.y - text.textHeight*0.5 )
+
+  	this.addChild( text )
+
 
   }
 }
