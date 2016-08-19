@@ -4,11 +4,11 @@ var pkg = require('./package.json')
 var DEBUG = process.env.NODE_ENV !== 'production'
 var util = require('util')
 var entry = {
-  game:    ['./app/app.js']
+  game: ['./app.js']
 }
 
 module.exports = {
-  context: __dirname,
+  context: path.join(__dirname, 'app'),
   entry: entry,
   debug : DEBUG,
   target : 'web',
@@ -16,7 +16,7 @@ module.exports = {
   output: {
     path: path.resolve(pkg.config.buildDir),
     publicPath: DEBUG ? "/" : "./",
-    filename: "[name].js"
+    filename:  "js/[name].js"
   },
   
   plugins: [
