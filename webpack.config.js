@@ -31,10 +31,15 @@ module.exports = {
         { test: /\.jpe?g$|\.svg$|\.png$/, exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
         { test: /\.mp3$|\.ogg$/,          exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
         { test: /\.json$/,                exclude: /node_modules/,                                  loader: "json"},
-        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'json'}
+        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'json'},
+        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'p2'), loader: 'json'}
       ],
       postLoaders: [{
         include: path.join(__dirname, 'node_modules', 'pixi.js'),
+        loader: 'transform?brfs'
+      },
+      {
+        include: path.join(__dirname, 'node_modules', 'p2'),
         loader: 'transform?brfs'
       }]
   }

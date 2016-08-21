@@ -18,7 +18,7 @@ class AnimationManager extends utils.EventEmitter {
   emitChange() {
     this.tick++
     this.currentTime = window.performance.now()
-    this.emit(EVENTS.ANIMATE)
+    this.emit(EVENTS.ANIMATE, this.currentTime)
   }
 
   addEventListener(callback) {

@@ -21,7 +21,7 @@
     "pixi.js": "^3.0.7",
     "howler": "^2.0.0",
     "pixi-particles": "^1.6.6",
-    "pixi-timer": "^1.0.1"
+    "p2": "^0.7.1"
   },
   "devDependencies": {
     "babel-core": "^6.7.2",
