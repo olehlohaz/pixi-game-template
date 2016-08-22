@@ -1,91 +1,18 @@
-import {WebGLRenderer, Point, Container}   from 'pixi.js'
+import { Tween }          from '../core'
+import { Container}   from 'pixi.js'
 
-import { RendererManager, AnimationManager, TweenManager, Tween}       from '../core'
 
 
-/**
- * GL Renderer with hooks into a Store
- *
- * Manages main animation loop and resize canvas
- *
- * @exports Renderer
- * @extends WebGLRenderer
- */
-class StateManager extends WebGLRenderer {
+class StateManager {
 
   constructor() {
-
-    super()
 
     this.activeStates = new Map()
     this.states = new Map()
 
     this.stageContainer = new Container()
-    
-  }
-
-  init (stageWidth, stageHeight) {
-
-    this.resize( stageWidth, stageHeight )
-
-    this.resolution = window.devicePixelRatio;
-
-    window.addEventListener('resize', () => this.resizeHandler() )
-
-    RendererManager.resolution = this.resolution
-    RendererManager.width = stageWidth
-    RendererManager.height = stageHeight
-    RendererManager.center = new Point(stageWidth * 0.5, stageHeight * 0.5)
-
-    this.resizeHandler()
-
-    AnimationManager.addEventListener( () => TweenManager.update() )
-
-    document.body.appendChild(this.view)
-    this.autoResize = true
 
   }
-
-  resizeHandler () {
-    
-    window.scrollTo(0,1)
-
-    const scale = Math.min(window.innerWidth / RendererManager.width, window.innerHeight / RendererManager.height );
-  
-    const width  = Math.floor( RendererManager.width * scale )
-    const height = Math.floor( RendererManager.height * scale )
-
-    const offsetX = (window.innerWidth - width) * 0.5
-    const offsetY = (window.innerHeight - height) * 0.5
-
-    this.view.style.width = width + "px"
-    this.view.style.height = height + "px"
-
-    this.view.style.marginTop = offsetY + 'px'
-    this.view.style.marginLeft = offsetX + 'px'
-
-    RendererManager.emitChange()
-  }
-
-  start () {
-    this.active = true
-    window.requestAnimationFrame( () => this.animate() )
-  }
-
-
-  stop () {
-    this.active = false
-  }
-
-  animate () {
-    this.renderStates()
-
-    if(this.active) {
-      window.requestAnimationFrame( () => this.animate() )
-      AnimationManager.emitChange()
-    }
-  }
-
 
   addState ( key, state ) {
     this.states.set( key, state )
@@ -144,12 +71,8 @@ class StateManager extends WebGLRenderer {
     tweenOld.start()
 
     return tweenOld
-
   }
 
-  renderStates() {
-    this.render( this.stageContainer )
-  }
 }
 
 

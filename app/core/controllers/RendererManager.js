@@ -1,27 +1,72 @@
-import { utils, loader }  from 'pixi.js'
-import { EVENTS } from '../core'
+import {AnimationManager, TweenManager, StateManager, EVENTS }      from '../core'
 
+import { WebGLRenderer, utils, loader, Point }  from 'pixi.js'
+import { config } from '../../../package.json'
 
-class RendererManager extends utils.EventEmitter {
+class RendererManager extends WebGLRenderer {
 
   constructor() {
+
     super();
 
-    this.width = 0;
-    this.height = 0;
-    this.stageWidth = 0;
-    this.stageHeight = 0;
-    this.center = {x: 0, y: 0}
-    this.resolution = 1
+    this.resolution = window.devicePixelRatio
 
+    this.width = config.stageWidth
+    this.height = config.stageHeight
+    this.center = new Point(this.width * 0.5, this.height * 0.5)
+
+    this.resize( this.width, this.height )
+
+
+    document.body.appendChild(this.view)
+    this.autoResize = true
+
+    AnimationManager.addEventListener( () => TweenManager.update() )
+    window.addEventListener('resize', () => this.resizeHandler() )
   }
 
-  emitChange() {
-    this.emit(EVENTS.RESIZE, this.data)
+  start () {
+    this.active = true
+    window.requestAnimationFrame( () => this.animate() )
   }
 
-  addEventListener(callback) {
-    this.on(EVENTS.RESIZE, callback, callbackContext)
+  stop () {
+    this.active = false
+  }
+
+  animate () {
+
+    this.render( StateManager.stageContainer )
+
+
+    if(this.active) {
+
+      window.requestAnimationFrame( () => this.animate() )
+      AnimationManager.emitChange()
+
+    }
+  }
+
+  resizeHandler () {
+
+    window.scrollTo(0,1)
+
+    const scale = Math.min(window.innerWidth / this.width, window.innerHeight / this.height );
+  
+    const width  = Math.floor( this.width * scale )
+    const height = Math.floor( this.height * scale )
+
+    const offsetX = (window.innerWidth - width) * 0.5
+    const offsetY = (window.innerHeight - height) * 0.5
+
+    this.view.style.width = width + "px"
+    this.view.style.height = height + "px"
+
+    this.view.style.marginTop = offsetY + 'px'
+    this.view.style.marginLeft = offsetX + 'px'
+
+    this.emit( EVENTS.RESIZE, { width: this.width, height: this.height } )
+
   }
 }
 

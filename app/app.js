@@ -8,11 +8,11 @@
 
 import './index.html'
 import {config}         from '../package.json'
-import { StateManager}  from './core/core'
+import { StateManager, RendererManager }  from './core/core'
 import {PreloaderScene, GameScene }        from './game/game'
 import {loader}       	from 'pixi.js'
 
-StateManager.init( config.stageWidth, config.stageHeight )
+RendererManager.resizeHandler()
 
 const preloader = new PreloaderScene()
 const game      = new GameScene()
@@ -24,7 +24,7 @@ StateManager.addState( 'Preloader', preloader )
 
 function setup() { 
   StateManager.setActive( 'Preloader' )
-  StateManager.start()  
+  RendererManager.start()
 }
 
 setup()
