@@ -1,7 +1,5 @@
-import PreloaderBar       from '../../core/components/PreloaderBar'
-import StateManager       from '../../core/controllers/StateManager'
-import Sound              from '../../core/controllers/SoundManager'
-import Game               from './Game'
+import {PreloaderBar, StateManager, SoundManager}       from '../../core/core'
+
 
 import { loader, Sprite }       from 'pixi.js'
 
@@ -16,7 +14,7 @@ export default class Preloader extends PIXI.Container {
     this.audioLoaded = false
     this.dataLoaded = false
 
-    Sound.addLoadListener(this.onLoadAudioComplete, this)
+    SoundManager.addLoadListener(this.onLoadAudioComplete, this)
     
   }
 

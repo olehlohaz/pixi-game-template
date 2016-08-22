@@ -1,4 +1,4 @@
-import Utils              from '../utils/Utils'
+import { Utils }              from '../core'
 
 import { Sprite, utils }  from 'pixi.js'
 

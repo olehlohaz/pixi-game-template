@@ -1,5 +1,5 @@
 import { utils, loader }  from 'pixi.js'
-import { TEXT_FORMAT } from '../Constants'
+import { TEXT_FORMAT } from '../core'
 
 class Utils {
 

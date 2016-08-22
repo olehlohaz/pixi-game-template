@@ -1,4 +1,4 @@
-import TweenManager  from '../controllers/TweenManager'
+import { TweenManager }  from '../core'
 import { utils }  from 'pixi.js'
 
 export default class Tween extends utils.EventEmitter {

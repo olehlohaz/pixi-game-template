@@ -1,5 +1,5 @@
 import { utils, loader }  from 'pixi.js'
-import { EVENTS } from '../Constants'
+import { EVENTS } from '../core'
 
 
 class AnimationManager extends utils.EventEmitter {

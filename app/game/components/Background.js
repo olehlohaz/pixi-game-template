@@ -1,6 +1,4 @@
-import Renderer         from '../core/controllers/RendererManager'
-import Utils            from '../core/utils/Utils'
-import ParticleEmitter  from '../core/effects/ParticleEmitter'
+import { RendererManager, Utils, ParticleEmitter}         from '../../core/core'
 
 import { Container, Sprite, Graphics, tween as Tween }  from 'pixi.js'
 
@@ -22,7 +20,7 @@ export default class Background extends Container {
   	let backgroundColor = new Graphics()
 
   	backgroundColor.beginFill( 0x8f0096, 1 )
-  	backgroundColor.drawRect( 0, 0, Renderer.width, Renderer.height )
+  	backgroundColor.drawRect( 0, 0, RendererManager.width, RendererManager.height )
   	this.addChild( backgroundColor )
 
   }
@@ -51,7 +49,7 @@ export default class Background extends Container {
       addAtBack: false,
       spawnType: 'rect',
 
-      pos: { x: -Renderer.center.x, y: -Renderer.center.y - 50 },
+      pos: { x: -RendererManager.center.x, y: -RendererManager.center.y - 50 },
       spawnRect: { x: 0, y: 0, w: 1500, h: 0 }
     }
 

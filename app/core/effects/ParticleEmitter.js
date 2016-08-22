@@ -1,5 +1,4 @@
-import Utils      from '../utils/Utils'
-import Animation  from '../controllers/AnimationManager'
+import {Utils, Animation }      from '../core'
 import Particles  from 'pixi-particles'
 
 import { Container, ParticleContainer, particles, loader } from 'pixi.js'

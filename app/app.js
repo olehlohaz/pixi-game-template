@@ -8,15 +8,14 @@
 
 import './index.html'
 import {config}         from '../package.json'
-import StateManager     from './core/controllers/StateManager'
-import Preloader        from './game/scenes/Preloader'
-import Game             from './game/scenes/Game'
+import { StateManager}  from './core/core'
+import {PreloaderScene, GameScene }        from './game/game'
 import {loader}       	from 'pixi.js'
 
 StateManager.init( config.stageWidth, config.stageHeight )
 
-const preloader = new Preloader()
-const game      = new Game()
+const preloader = new PreloaderScene()
+const game      = new GameScene()
 
 StateManager.addState( 'Game', game )
 StateManager.addState( 'Preloader', preloader )

@@ -1,9 +1,7 @@
 import {WebGLRenderer, Point, Container}   from 'pixi.js'
 
-import Renderer       from './RendererManager'
-import Animation      from './AnimationManager'
-import TweenManager   from './TweenManager'
-import Tween          from '../effects/Tween'
+import { RendererManager, AnimationManager, TweenManager, Tween}       from '../core'
+
 
 /**
  * GL Renderer with hooks into a Store
@@ -34,14 +32,14 @@ class StateManager extends WebGLRenderer {
 
     window.addEventListener('resize', () => this.resizeHandler() )
 
-    Renderer.resolution = this.resolution
-    Renderer.width = stageWidth
-    Renderer.height = stageHeight
-    Renderer.center = new Point(stageWidth * 0.5, stageHeight * 0.5)
+    RendererManager.resolution = this.resolution
+    RendererManager.width = stageWidth
+    RendererManager.height = stageHeight
+    RendererManager.center = new Point(stageWidth * 0.5, stageHeight * 0.5)
 
     this.resizeHandler()
 
-    Animation.addEventListener( () => TweenManager.update() )
+    AnimationManager.addEventListener( () => TweenManager.update() )
 
     document.body.appendChild(this.view)
     this.autoResize = true
@@ -52,10 +50,10 @@ class StateManager extends WebGLRenderer {
     
     window.scrollTo(0,1)
 
-    const scale = Math.min(window.innerWidth / Renderer.width, window.innerHeight / Renderer.height );
+    const scale = Math.min(window.innerWidth / RendererManager.width, window.innerHeight / RendererManager.height );
   
-    const width  = Math.floor( Renderer.width * scale )
-    const height = Math.floor( Renderer.height * scale )
+    const width  = Math.floor( RendererManager.width * scale )
+    const height = Math.floor( RendererManager.height * scale )
 
     const offsetX = (window.innerWidth - width) * 0.5
     const offsetY = (window.innerHeight - height) * 0.5
@@ -66,7 +64,7 @@ class StateManager extends WebGLRenderer {
     this.view.style.marginTop = offsetY + 'px'
     this.view.style.marginLeft = offsetX + 'px'
 
-    Renderer.emitChange()
+    RendererManager.emitChange()
   }
 
   start () {
@@ -84,7 +82,7 @@ class StateManager extends WebGLRenderer {
 
     if(this.active) {
       window.requestAnimationFrame( () => this.animate() )
-      Animation.emitChange()
+      AnimationManager.emitChange()
     }
   }
 

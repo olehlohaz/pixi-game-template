@@ -1,6 +1,6 @@
 import { utils, loader }  from 'pixi.js'
 import { Howler, Howl }   from 'howler'
-import { AUDIO_LOADED }   from '../Constants'
+import { AUDIO_LOADED }   from '../core'
 
 
 

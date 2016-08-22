@@ -1,5 +1,4 @@
-import Renderer from '../controllers/RendererManager'
-import Tween from '../effects/Tween'
+import {RendererManager, Tween } from '../core'
 
 import { Container, Graphics } from 'pixi.js'
 
@@ -15,14 +14,14 @@ export default class PreloaderBar extends Container {
     this.progressBar = new Graphics()
     
     this.progressBar.beginFill(0x666666, 0.8)
-    this.progressBar.drawRect(Renderer.width*0.1, Renderer.center.y, Renderer.width*0.8, 30)
+    this.progressBar.drawRect(RendererManager.width*0.1, RendererManager.center.y, RendererManager.width*0.8, 30)
     this.progressBar.endFill()
 
     this.addChild( this.progressBar )
 
     this.preloaderFront = new Graphics()
     this.preloaderFront.beginFill(0xCCFFCC, 1)
-    this.preloaderFront.drawRect(Renderer.width*0.1, Renderer.center.y, Renderer.width*0.8, 30)
+    this.preloaderFront.drawRect(RendererManager.width*0.1, RendererManager.center.y, RendererManager.width*0.8, 30)
     this.preloaderFront.endFill()
     this.addChild( this.preloaderFront )
 
