@@ -1,5 +1,5 @@
-import { TweenManager }  from '../core'
-import { utils }  from 'pixi.js'
+import {TweenManager}  from '../core'
+import { utils, ticker, TARGET_FPMS }  from 'pixi.js'
 
 export default class Tween extends utils.EventEmitter {
 
@@ -21,18 +21,23 @@ export default class Tween extends utils.EventEmitter {
   
   }
 
+  get target() {
+    return this._object
+  }
+
   reset() {
     this._valuesStart = new Map()
     this._valuesEnd = new Map()
     this._valuesStartRepeat = new Map()
     this._duration = 0
     this._repeat = 0
-    this._repeatDelayTime
+    this._repeatDelayTime = 0
     this._yoyo = false
     this._isPlaying = false
     this._reversed = false
     this._delayTime = 0
     this._startTime = null
+    this._currentTime = 0
     this._easingFunction = TWEEN.Easing.Linear.None
     this._interpolationFunction = TWEEN.Interpolation.Linear
     this._chainedTweens = new Set()
@@ -46,13 +51,14 @@ export default class Tween extends utils.EventEmitter {
     this._duration = duration
 
     for (const k of Object.keys(properties)) {
-        this._valuesEnd.set( k, properties[k] )
+      // console.log(properties[k], typeof(properties[k]), (properties[k] instanceof Array) )
+      this._valuesEnd.set( k, properties[k] )
     }
 
     return this
   }
 
-  start ( time = TweenManager.now() ) {
+  start () {
 
     TweenManager.add(this)
 
@@ -60,8 +66,7 @@ export default class Tween extends utils.EventEmitter {
 
     this._isPlaying = true
 
-    this._startTime = time
-    this._startTime += this._delayTime
+    this._startTime = this._delayTime
 
     for (const [property, value] of this._valuesEnd.entries() ) {
 
@@ -84,9 +89,22 @@ export default class Tween extends utils.EventEmitter {
         continue;
       }
 
-      this._valuesStart.set(property, this._object[property] )
+      if(this._isObject(this._object[property])) {
 
-      this._valuesStartRepeat.set(property, this._valuesStart.get(property) || 0 )
+        let ob1 = new Object()
+        let ob2 = new Object()
+        for(const key of Object.keys( this._object[property] ) ) {
+          ob1[key] = this._object[property][key]
+          ob2[key] = this._object[property][key]
+        }
+
+        this._valuesStart.set(property, ob1 )
+        this._valuesStartRepeat.set(property, ob2 )
+
+      } else {
+        this._valuesStart.set(property, this._object[property] )
+        this._valuesStartRepeat.set(property, this._valuesStart.get(property) || 0 )
+      }
 
     }
 
@@ -124,11 +142,11 @@ export default class Tween extends utils.EventEmitter {
   }
 
   delay (amount) {
-    this._delayTime = amount
+    this._delayTime = ( amount > 0 ) ? amount : 0
     return this
   }
   repeat (times) {
-    this._repeat = times
+    this._repeat = ( times >= 0 ) ? times : Infinity
     return this
   }
   repeatDelay (amount) {
@@ -136,7 +154,8 @@ export default class Tween extends utils.EventEmitter {
     return this
   }
   yoyo (yoyo) {
-    _yoyo = yoyo
+    this._yoyo = yoyo
+
     return this
   }
   easing (easing) {
@@ -173,71 +192,119 @@ export default class Tween extends utils.EventEmitter {
   }
 
 
-  update (time) {
 
-    let property
-    let elapsed
-    let value
+  _tweenPropertyToValue(property, start, end, ease, subValue = null) {
+    if (end instanceof Array) {
 
-    if (time < this._startTime) {
+      if(subValue) {
+        this._object[property][subValue] = this._interpolationFunction(end, ease)
+      } else {
+        this._object[property] = this._interpolationFunction(end, ease)
+      }
+
+    } else {
+
+      // Parses relative end values with start as base (e.g.: +10, -3)
+      if (typeof (end) === 'string') {
+        if (end.charAt(0) === '+' || end.charAt(0) === '-') {
+          end = start + parseFloat(end)
+        } else {
+          end = parseFloat(end)
+        }
+      }
+
+      // Protect against non numeric properties.
+      if (typeof (end) === 'number') {
+        if(subValue) {
+          this._object[property][subValue] = start + (end - start) * ease
+        } else {
+          this._object[property] = start + (end - start) * ease
+        }
+      }
+    }
+  }
+
+  _isObject(value) {
+    return (typeof(value) !== 'number' && typeof(value) !== 'string' && !(value instanceof Array) )
+  }
+
+  update (deltaTime) {
+
+    // console.log(deltaTime)
+    this._currentTime += deltaTime/TARGET_FPMS;
+
+
+    if (this._currentTime < this._startTime) {
       return true;
     }
 
     if (this.hasStarted === false) {
-
       this.emit( this.EVENTS.START, this._object )
-
       this.hasStarted = true
-
     }
 
 
-    elapsed = (time - this._startTime) / this._duration
+    let elapsed = (this._currentTime - this._startTime) / this._duration
     elapsed = elapsed > 1 ? 1 : elapsed
 
-    value = this._easingFunction(elapsed)
+    let value = this._easingFunction(elapsed)
 
-    for ( const property of this._valuesEnd.keys() ) {
+    for ( const [property, endValue] of this._valuesEnd.entries() ) {
 
       // Don't update properties that do not exist in the source object
       if ( !this._valuesStart.has(property) ) {
         continue
       }
 
-      var start = this._valuesStart.get(property) || 0
-      var end = this._valuesEnd.get(property)
+      if( this._isObject(endValue) ) {
 
-      if (end instanceof Array) {
+        for(const key2 of Object.keys(endValue)) {
 
-        this._object[property] = this._interpolationFunction(end, value)
+          var start = this._valuesStart.get(property)[key2] || 0
+          var end = this._valuesEnd.get(property)[key2]    
+
+          this._tweenPropertyToValue(property, start, end, value, key2)
+        }
 
       } else {
+        var start = this._valuesStart.get(property) || 0
+        var end = this._valuesEnd.get(property)
 
-        // Parses relative end values with start as base (e.g.: +10, -3)
-        if (typeof (end) === 'string') {
-
-          if (end.charAt(0) === '+' || end.charAt(0) === '-') {
-            end = start + parseFloat(end)
-          } else {
-            end = parseFloat(end)
-          }
-        }
-
-        // Protect against non numeric properties.
-        if (typeof (end) === 'number') {
-          this._object[property] = start + (end - start) * value
-        }
-
+        this._tweenPropertyToValue(property, start, end, value)
       }
+
+
 
     }
 
-    
-    this.emit( this.EVENTS.UPDATE, this._object, value )
+    this.emit( this.EVENTS.UPDATE, [this._startTime, this._currentTime, this._duration] )
 
     if (elapsed === 1) {
 
-      if (this._repeat > 0) {
+      if(this._yoyo && !this._reversed) {
+
+        for ( const property of this._valuesStartRepeat.keys() ) {
+
+          if (typeof ( this._valuesEnd.get(property) ) === 'string') {
+
+            this._valuesStartRepeat.set(property, this._valuesStartRepeat.get(property) + parseFloat(this._valuesEnd.get(property) ) )
+
+          }
+
+          const tmp = this._valuesStartRepeat.get(property)
+
+          this._valuesStartRepeat.set(property, this._valuesEnd.get(property) )
+          this._valuesEnd.set(property, tmp)
+
+          this._valuesStart.set(property, this._valuesStartRepeat.get(property) )
+
+        }
+
+        this._reversed = !this._reversed
+
+        this._startTime = this._currentTime
+
+      } else if (this._repeat > 0) {
 
         this.emit( this.EVENTS.REPEAT, this._object, this._repeat )
 
@@ -252,31 +319,25 @@ export default class Tween extends utils.EventEmitter {
             this._valuesStartRepeat.set(property, this._valuesStartRepeat.get(property) + parseFloat(this._valuesEnd.get(property) ) )
           }
 
-          if (this._yoyo) {
+          if(this._reversed) {
             const tmp = this._valuesStartRepeat.get(property)
 
-            this._valuesStartRepeat.set(property, _valuesEnd.get(property) )
+            this._valuesStartRepeat.set(property, this._valuesEnd.get(property) )
             this._valuesEnd.set(property, tmp)
           }
 
           this._valuesStart.set(property, this._valuesStartRepeat.get(property) )
         }
 
-        if (this._yoyo) {
-          this._reversed = !this._reversed
+        if(this._reversed) {
+          this._reversed = false
         }
 
-        if (this._repeatDelayTime !== undefined) {
-          this._startTime = time + this._repeatDelayTime
-        } else {
-          this._startTime = time + this._delayTime
-        }
+        this._startTime = this._currentTime + this._repeatDelayTime
 
         return true
 
       } else {
-
-        this.emit( this.EVENTS.COMPLETE, this._object )
 
         for (const chain of this._chainedTweens.values() ) {
           chain.start(this._startTime + this._duration)

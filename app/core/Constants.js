@@ -8,21 +8,33 @@ Object.assign(String.prototype, {
     }
 })
 
-const BUTTON_STATE = {
-	PRESSED: 	Symbol('button_pressed'),
-	RELEASED: 	Symbol('button_released'),
+Math.rangeInt = function(min, max) {
+  return Math.floor( Math.random() * ( max - min ) + min )
+}
+Math.rangeFloat = function(min, max) {
+  return Math.random() * ( max - min ) + min
 }
 
-const EVENTS = {
-	STATE_CHANGE: 		Symbol('event_state_change'),
-	ANIMATE: 			Symbol('event_animate'),
-	RESIZE: 			Symbol('event_resize'),
+
+export const BUTTON_STATE = {
+  PRESSED:            Symbol('button.pressed'),
+  RELEASED:           Symbol('button.released'),
 }
 
-const TEXT_FORMAT = {
-	STRING: 		Symbol('text_format_string'),
-	INTEGER: 		Symbol('text_format_integer'),
-	FLOAT: 			Symbol('text_format_float'),
+export const EVENTS = {
+  STATE_CHANGE:       Symbol('event.state.change'),
+  ANIMATE:            Symbol('event.animate'),
+  RESIZE:             Symbol('event.resize'),
+  STATES: {
+    INIT:             Symbol('event.state.init'),
+    REMOVE:           Symbol('event.state.remove'),
+  }
 }
 
-export { BUTTON_STATE, EVENTS, TEXT_FORMAT }
+export const TEXT_FORMAT = {
+  STRING:         Symbol('text_format.string'),
+  INTEGER:        Symbol('text_format.integer'),
+  FLOAT:          Symbol('text_format.float'),
+  MONEY:          Symbol('text_format.money'),
+  MONEY_DECIMAL:  Symbol('text_format.money_decimal'),
+}

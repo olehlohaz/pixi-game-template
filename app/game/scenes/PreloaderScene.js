@@ -1,10 +1,10 @@
-import {PreloaderBar, StateManager, SoundManager}       from '../../core/core'
+import {PreloaderBar, StateManager, SoundManager, StateContainer}       from '../../core/core'
 
 
-import { loader, Sprite }       from 'pixi.js'
+import { loader }       from 'pixi.js'
 
 
-export default class Preloader extends PIXI.Container {
+export default class Preloader extends StateContainer {
 
   constructor () {
 
@@ -18,7 +18,7 @@ export default class Preloader extends PIXI.Container {
     
   }
 
-  init() {
+  Init() {
 
     this.preloaderBar = new PreloaderBar()
     this.addChild( this.preloaderBar )

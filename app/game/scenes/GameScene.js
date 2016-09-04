@@ -1,15 +1,15 @@
-import { RendererManager }           from '../../core/core'
+import { RendererManager, StateContainer }           from '../../core/core'
 
-import {Graphics, Container, extras}  from 'pixi.js'
+import {Graphics, extras }  from 'pixi.js'
 
 
-export default class Game extends Container {
+export default class Game extends StateContainer {
 
   constructor() {
     super()
   }
 
-  init () {
+  Init () {
 
 
   	const text = new extras.BitmapText('Hello World!', { font: '40px SaranaiGame-Bold', align: 'center' })

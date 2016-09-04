@@ -1,4 +1,4 @@
-import { Tween }          from '../core'
+import { Tween, EVENTS }          from '../core'
 import { Container}   from 'pixi.js'
 
 
@@ -23,8 +23,17 @@ class StateManager {
     if( !this.activeStates.has( key ) ) {
       return
     }
+    let oldState = this.activeStates.get( key )
+    oldState.emit(EVENTS.STATES.REMOVE)
 
     this.activeStates.delete( key )
+  }
+  removeAllActives(exceptionKey) {
+    for(const [key, oldState] of this.activeStates.entries() ) {
+      if( key !== exceptionKey ) {
+        this.removeActive( key )
+      }
+    }
   }
 
   addActive ( key, clear = false ) {
@@ -36,14 +45,13 @@ class StateManager {
 
     if( state ) {
       if(clear) {
-        this.activeStates.clear()
+        this.removeAllActives()
         this.stageContainer.removeChildren()
       }
       this.activeStates.set(key, state)
       this.stageContainer.addChild(state)
-      if(state.init) {
-        state.init()
-      }
+      state.emit(EVENTS.STATES.INIT)
+      
     }
     return state
   }
