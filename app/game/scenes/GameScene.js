@@ -13,7 +13,7 @@ export default class Game extends StateContainer {
 
 
   	const text = new extras.BitmapText('Hello World!', { font: '40px SaranaiGame-Bold', align: 'center' })
-  	text.position.set( RendererManager.center.x - text.textWidth*0.5, RendererManager.center.y - text.textHeight*0.5 )
+  	text.position.set(  - text.textWidth*0.5,  - text.textHeight*0.5 )
 
   	this.addChild( text )
 

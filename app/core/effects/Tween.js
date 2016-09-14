@@ -32,12 +32,14 @@ export default class Tween extends utils.EventEmitter {
     this._duration = 0
     this._repeat = 0
     this._repeatDelayTime = 0
+    this._yoyoDelayTime = 0
     this._yoyo = false
     this._isPlaying = false
     this._reversed = false
     this._delayTime = 0
-    this._startTime = null
+    this._startTime = 0
     this._currentTime = 0
+    this._relativeTime = 0
     this._easingFunction = TWEEN.Easing.Linear.None
     this._interpolationFunction = TWEEN.Interpolation.Linear
     this._chainedTweens = new Set()
@@ -66,6 +68,9 @@ export default class Tween extends utils.EventEmitter {
 
     this._isPlaying = true
 
+    this.hasStarted = false
+    this._currentTime = 0
+    this._relativeTime = 0
     this._startTime = this._delayTime
 
     for (const [property, value] of this._valuesEnd.entries() ) {
@@ -94,8 +99,14 @@ export default class Tween extends utils.EventEmitter {
         let ob1 = new Object()
         let ob2 = new Object()
         for(const key of Object.keys( this._object[property] ) ) {
+
           ob1[key] = this._object[property][key]
           ob2[key] = this._object[property][key]
+          
+          if(value[key] === undefined) {
+            value[key] = ob2[key]
+          }          
+
         }
 
         this._valuesStart.set(property, ob1 )
@@ -105,7 +116,6 @@ export default class Tween extends utils.EventEmitter {
         this._valuesStart.set(property, this._object[property] )
         this._valuesStartRepeat.set(property, this._valuesStart.get(property) || 0 )
       }
-
     }
 
     return this
@@ -150,12 +160,15 @@ export default class Tween extends utils.EventEmitter {
     return this
   }
   repeatDelay (amount) {
-    _repeatDelayTime = amount
+    this._repeatDelayTime = amount
     return this
   }
   yoyo (yoyo) {
     this._yoyo = yoyo
-
+    return this
+  }
+  yoyoDelay (value) {
+    this._yoyoDelayTime = value
     return this
   }
   easing (easing) {
@@ -171,7 +184,7 @@ export default class Tween extends utils.EventEmitter {
     return this
   }
   onStart (callback) {
-    this.once(this.EVENTS.START, callback)
+    this.on(this.EVENTS.START, callback)
     return this
   }
   onUpdate (callback) {
@@ -179,15 +192,23 @@ export default class Tween extends utils.EventEmitter {
     return this
   }
   onComplete (callback) {
-    this.once(this.EVENTS.COMPLETE, callback)
+    this.on(this.EVENTS.COMPLETE, callback)
+    return this
+  }
+  offComplete(callback) {
+    this.off(this.EVENTS.REPEAT, callback)
     return this
   }
   onStop (callback) {
-    this.once(this.EVENTS.STOP, callback)
+    this.on(this.EVENTS.STOP, callback)
     return this
   }
   onRepeat (callback) {
     this.on(this.EVENTS.REPEAT, callback)
+    return this
+  }
+  offRepeat(callback) {
+    this.off(this.EVENTS.REPEAT, callback)
     return this
   }
 
@@ -231,8 +252,8 @@ export default class Tween extends utils.EventEmitter {
   update (deltaTime) {
 
     // console.log(deltaTime)
-    this._currentTime += deltaTime/TARGET_FPMS;
-
+    this._currentTime += deltaTime/TARGET_FPMS
+    this._relativeTime += deltaTime/TARGET_FPMS
 
     if (this._currentTime < this._startTime) {
       return true;
@@ -302,11 +323,10 @@ export default class Tween extends utils.EventEmitter {
 
         this._reversed = !this._reversed
 
-        this._startTime = this._currentTime
+        this._startTime = this._currentTime + this._yoyoDelayTime
 
       } else if (this._repeat > 0) {
 
-        this.emit( this.EVENTS.REPEAT, this._object, this._repeat )
 
         if (isFinite(this._repeat)) {
           this._repeat--
@@ -334,13 +354,16 @@ export default class Tween extends utils.EventEmitter {
         }
 
         this._startTime = this._currentTime + this._repeatDelayTime
+        this._relativeTime = 0
+
+        this.emit( this.EVENTS.REPEAT, this._object, this._repeat )
 
         return true
 
       } else {
 
         for (const chain of this._chainedTweens.values() ) {
-          chain.start(this._startTime + this._duration)
+          chain.start()
         }
         return false
       }

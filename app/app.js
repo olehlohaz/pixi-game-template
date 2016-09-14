@@ -14,11 +14,9 @@ import { loader }       	from 'pixi.js'
 
 RendererManager.resizeHandler()
 
-const preloader = new PreloaderScene()
-const game      = new GameScene()
 
-StateManager.addState( 'Game',      game )
-StateManager.addState( 'Preloader', preloader )
+StateManager.addState( 'Game',      GameScene )
+StateManager.addState( 'Preloader', PreloaderScene )
 
 // loader.add('preloader', 'assets/preloader.json').load(setup)
 

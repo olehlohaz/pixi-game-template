@@ -1,4 +1,4 @@
-import { Tween, EVENTS }          from '../core'
+import { Tween, EVENTS, RendererManager }          from '../core'
 import { Container}   from 'pixi.js'
 
 
@@ -11,6 +11,7 @@ class StateManager {
     this.states = new Map()
 
     this.stageContainer = new Container()
+    this.stageContainer.position.set(RendererManager.center.x, RendererManager.center.y)
 
   }
 
@@ -27,7 +28,10 @@ class StateManager {
     oldState.emit(EVENTS.STATES.REMOVE)
 
     this.activeStates.delete( key )
+
+    return oldState
   }
+
   removeAllActives(exceptionKey) {
     for(const [key, oldState] of this.activeStates.entries() ) {
       if( key !== exceptionKey ) {
@@ -36,12 +40,20 @@ class StateManager {
     }
   }
 
+  restart( name ) {
+
+    const oldState = this.removeActive( name )
+    oldState.destroy()
+    this.addActive( name )
+  }
+
   addActive ( key, clear = false ) {
     if( !this.states.has( key ) ) {
       return
     }
 
-    const state = this.states.get( key )
+    const stateClass = this.states.get( key )
+    const state = new stateClass()
 
     if( state ) {
       if(clear) {

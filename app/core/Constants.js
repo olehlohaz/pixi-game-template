@@ -14,6 +14,12 @@ Math.rangeInt = function(min, max) {
 Math.rangeFloat = function(min, max) {
   return Math.random() * ( max - min ) + min
 }
+Math.radians = (degrees) => {
+  return degrees * Math.PI / 180
+}
+Math.degrees = (radians) => {
+  return radians * 180 / Math.PI
+}
 
 
 export const BUTTON_STATE = {

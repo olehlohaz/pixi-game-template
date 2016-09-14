@@ -1,11 +1,11 @@
-import { Container, utils }  from 'pixi.js'
+import { Container, utils, ticker }  from 'pixi.js'
 
 class TweenManager {
 
   constructor() {
 
     this._tweens = new Set()
-    this.defineNow()
+    ticker.shared.add( (time) => this.update(time) )
 
   }
 
@@ -20,49 +20,32 @@ class TweenManager {
   add (tween) {
     this._tweens.add( tween )
   }
+  removeFrom(elem) {
+    for( const [indx, value] of this._tweens.entries() ) {
+      if(value.target == elem) {
+        this.remove( value )
+      }
+    }
+  }
   remove (tween) {
     if(this._tweens.has(tween)) {
       this._tweens.delete(tween)
+      tween.emit(tween.EVENTS.COMPLETE)
     }
   }
-  update(time, preserve) {
+  update(time) {
     if (this._tweens.length === 0) {
       return false
     }
 
 
-    time = time !== undefined ? time : this.now();
-
     for( let tween of this._tweens.values() ) {
-      if(!tween.update( time ) && !preserve) {
+      if(!tween.update( time )) {
         this.remove( tween )
       }
     }
 
     return true
-  }
-
-  defineNow() {
-    if (this.window === undefined && this.process !== undefined) {
-
-      this.now = () => {
-        const time = process.hrtime()
-        return time[0] * 1000 + time[1] / 1000
-      }
-
-    } else if (this.window !== undefined && window.performance !== undefined && window.performance.now !== undefined) {
-
-      this.now = () => { return window.performance.now() }
-
-    } else if (Date.now !== undefined) {
-
-      this.now = Date.now;
-
-    } else {
-
-      this.now = () => { return new Date().getTime() }
-
-    }
   }
 }
 

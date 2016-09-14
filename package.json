@@ -6,7 +6,11 @@
   "config": {
     "buildDir": "./build",
     "stageWidth": 1280,
-    "stageHeight": 960
+    "stageHeight": 960,
+    "viewport": {
+      "width": 960,
+      "height": 960
+    }
   },
   "scripts": {
     "start": "NODE_ENV=development webpack-dev-server --content-base app/ --hot --inline",
