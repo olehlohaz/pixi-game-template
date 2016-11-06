@@ -20,7 +20,7 @@ export default class Preloader extends StateContainer {
 
   Init() {
 
-    this.preloaderBar = new PreloaderBar()
+    this.preloaderBar = new PreloaderBar( 0xff9a00, 0xffca00 )
     this.addChild( this.preloaderBar )
 
     loader.add('SaranaiGame-Bold',  'assets/SaranaiGame-Bold.fnt')
