@@ -25,7 +25,7 @@ class StateManager {
       return
     }
     let oldState = this.activeStates.get( key )
-    oldState.emit(EVENTS.STATES.REMOVE)
+    oldState.emit( EVENTS.STATES.REMOVE )
 
     this.activeStates.delete( key )
 
@@ -43,11 +43,10 @@ class StateManager {
   restart( name ) {
 
     const oldState = this.removeActive( name )
-    oldState.destroy()
     this.addActive( name )
   }
 
-  addActive ( key, clear = false ) {
+  addActive ( key, clear = false, ...data ) {
     if( !this.states.has( key ) ) {
       return
     }
@@ -62,14 +61,14 @@ class StateManager {
       }
       this.activeStates.set(key, state)
       this.stageContainer.addChild(state)
-      state.emit(EVENTS.STATES.INIT)
+      state.emit(EVENTS.STATES.INIT, ...data )
       
     }
     return state
   }
 
-  setActive ( key ) {
-    this.addActive( key, true )
+  setActive ( key, ...data ) {
+    this.addActive( key, true, ...data )
   }
 
   switchFade (newKey, time = 1000) {

@@ -1,6 +1,6 @@
-import { EVENTS, TweenManager } from '../core'
+import { RendererManager, EVENTS, TweenManager } from '../core'
 
-import { Container, Graphics } from 'pixi.js'
+import { Container, Graphics, ticker } from 'pixi.js'
 
 
 
@@ -12,12 +12,19 @@ export default class StateContainer extends Container {
 
     this.id = Symbol('state')
 
-    this.once(EVENTS.STATES.INIT, () => this.Init() )
-    this.on(EVENTS.STATES.INIT, () => this.Start() )
-    this.on(EVENTS.STATES.REMOVE, () => this.Remove() )
-    this.on(EVENTS.RESIZE, ( width, height ) => this.Resize( width, height ) )
+    this.destroyOnRemove = true
 
-    this.destroyOnRemove = false
+    this.resizeFunc = ( width, height ) => this.Resize( width, height )
+    this.updateFunc = (time) => this.Update(time)
+
+
+    this.once(EVENTS.STATES.INIT, (...data) => this.Init(...data) )
+    this.on(EVENTS.STATES.INIT, (...data) => this.Start(...data) )
+    this.on(EVENTS.STATES.REMOVE, () => this.Remove() )
+
+    RendererManager.on(EVENTS.RESIZE, this.resizeFunc )
+
+    ticker.shared.add( this.updateFunc )
 
   }
 
@@ -28,19 +35,28 @@ export default class StateContainer extends Container {
   Start() {
 
   }
+  Update() {
+
+  }
 
   Resize(width, height) {
     
   }
 
   Remove() {
-    if(this.destroyOnRemove) {
-      this.destroy(true)
+    if( this.destroyOnRemove ) {
+      this.destroy( true )
     }
   }
   destroy() {
 
+    RendererManager.off(EVENTS.RESIZE, this.resizeFunc )
+
+    ticker.shared.remove( this.updateFunc )
+
     for( const [indx, value] of this.children.entries() ) {
+      TweenManager.removeFrom(value)
+      this.removeChild(value)
       value.destroy()
     }
 

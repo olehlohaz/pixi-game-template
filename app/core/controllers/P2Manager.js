@@ -1,5 +1,5 @@
-import { AnimationManager, RendererManager }  from '../core'
-import { Container, utils, TARGET_FPMS }  from 'pixi.js'
+import { AnimationManager, RendererManager, Timer }  from '../core'
+import { Container, utils, TARGET_FPMS, ticker }  from 'pixi.js'
 import p2  from 'p2'
 
 class P2Manager extends utils.EventEmitter {
@@ -8,17 +8,40 @@ class P2Manager extends utils.EventEmitter {
 
     super()
 
-    this.EVENTS = {
-      BEGIN_CONTACT:  'beginContact',
-      END_CONTACT:    'endContact',
-      IMPACT:         'impact'
-    }
+    
 
     this._world
-    this.maxSubSteps = 10
+    this.maxSubSteps = 1
     this.SIZE = 50
     this.debug = false
     this.outOfBoundsKill = false
+
+    this.collisionGroups = new Map()
+
+  }
+
+  group( name ) {
+    return this.collisionGroups.get( name )
+  }
+
+  createCollisionGroup( name ) {
+    this.collisionGroups.set( name, Math.pow(2, this.collisionGroups.size ) )
+  }
+
+  setContactMaterial( material1, material2, config ) {
+
+    const contactMaterial = new p2.ContactMaterial(material1, material2, config)
+    this._world.addContactMaterial( contactMaterial )
+
+  }
+
+
+  onAddBody(data) {
+    // console.log( data )
+    if(!data.body.sprite) {
+      return
+    }
+    data.body.sprite.visible = true
   }
 
   get world() {
@@ -26,28 +49,106 @@ class P2Manager extends utils.EventEmitter {
   }
 
 
-  // impact
-  // endContact
-  // beginContact
+  createMaterial() {
+    return new p2.Material()
+  }
 
+  reset() {
+    
+    if( this.updateFunc ) {
+      ticker.shared.remove( this.updateFunc, this )
+    }
+
+    if( this._world ) {
+
+
+      this._world.off(this.POST_STEP, this.postUpdate, this )
+      this._world.off(this.ADD_BODY, this.onAddBody, this )
+      this._world.off(this.BEGIN_CONTACT, this.onBeginContact, this )
+      this._world.off(this.END_CONTACT, this.onEndContact, this )
+
+
+      this.collisionGroups.clear()
+      
+      this._world.clear()
+    }
+    this._world = null
+
+  }
 
   start() {
-    AnimationManager.addEventListener( (time) => this.update(time) )
+
+    this.updateFunc = (time) => this.update(time)
+    ticker.shared.add( this.updateFunc, this )
+
   }
 
   createWorld( gravityX = 0, gravityY = 9.82) {
+
+    console.log('------ createWorld ------')
+
+    this.createCollisionGroup('EVERYTHING')
+
     this._world = new p2.World({
         gravity: [ gravityX, gravityY ]
     })
 
-
-    this._world.on('postStep', () => this.postUpdate() )
+    this._world.on(this.POST_STEP, this.postUpdate, this )
+    this._world.on(this.ADD_BODY, this.onAddBody, this )
+    this._world.on(this.BEGIN_CONTACT, this.onBeginContact, this )
+    this._world.on(this.END_CONTACT, this.onEndContact, this )
 
     return this._world
   }
 
+  checkRaycast( shape1, shape2 ) {
+    let rayClosest = new p2.Ray({
+      mode: p2.Ray.CLOSEST
+    })
+    let result = new p2.RaycastResult()
+    
+    let global1 = []
+    shape1.body.toWorldFrame(global1, shape1.position)
+
+    let global2 = []
+    shape2.body.toWorldFrame(global2, shape2.position)
+
+    
+    p2.vec2.copy( rayClosest.from, global1 )
+    p2.vec2.copy( rayClosest.to, shape2.position )
+    rayClosest.update()
+
+    this._world.raycast( result, rayClosest )
+
+    result.ray = rayClosest
+
+    return result
+  }
+
+  onBeginContact(event) {
+
+    if(event.bodyA.sprite) {
+      event.bodyA.sprite.emit( this.BEGIN_CONTACT, event.bodyA, event.bodyB, event.shapeA, event.shapeB, this.checkRaycast( event.shapeA, event.shapeB ) )
+    }
+    if(event.bodyB.sprite) {
+      event.bodyB.sprite.emit( this.BEGIN_CONTACT, event.bodyB, event.bodyA, event.shapeB, event.shapeA, this.checkRaycast( event.shapeB, event.shapeA ) )
+    }
+  }
+
+  onEndContact(event) {
+
+    if(event.bodyA.sprite) {
+      event.bodyA.sprite.emit( this.END_CONTACT, event.bodyA, event.bodyB, event.shapeA, event.shapeB, this.checkRaycast( event.shapeA, event.shapeB ) )
+    }
+    if(event.bodyB.sprite) {
+      event.bodyB.sprite.emit( this.END_CONTACT, event.bodyB, event.bodyA, event.shapeB, event.shapeA, this.checkRaycast( event.shapeB, event.shapeA ) )
+    }
+  }
   
   update(time) {
+    if(!this._world) {
+      return
+    }
     this._world.step(TARGET_FPMS, time*TARGET_FPMS, this.maxSubSteps )
   }
   postUpdate() {
@@ -55,22 +156,21 @@ class P2Manager extends utils.EventEmitter {
   }
 
   updateBody(body) {
-    
-    body.sprite.position.set( body.interpolatedPosition[0] * this.SIZE, body.interpolatedPosition[1] * this.SIZE )
+
+    if(!body.sprite) {
+      return
+    }
+
+    body.sprite.position.set( body.position[0] * this.SIZE, body.position[1] * this.SIZE )
     body.sprite.rotation = body.angle
     
-    if(this.outOfBoundsKill || body.sprite.outOfBoundsKill) {
-      const p = body.sprite.toGlobal({x:0, y: 0})
-      if(p.x + body.sprite.width < 0 || 
-            p.y + body.sprite.height < 0 || 
-            p.x - body.sprite.width > RendererManager.width || 
-            p.y - body.sprite.height > RendererManager.height) {
-
-        body.sprite.destroy()
-
-      }
-    }
   }
+
+  get BEGIN_CONTACT() { return 'beginContact' }
+  get END_CONTACT() { return 'endContact' }
+  get IMPACT() { return 'impact' }
+  get ADD_BODY() { return 'addBody' }
+  get POST_STEP() { return 'postStep' }
   
 }
 

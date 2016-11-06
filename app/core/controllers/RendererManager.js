@@ -3,20 +3,17 @@ import {AnimationManager, TweenManager, StateManager, EVENTS }      from '../cor
 import { CanvasRenderer, WebGLRenderer, utils, loader, Point, Rectangle, ticker }  from 'pixi.js'
 import { config } from '../../../package.json'
 
-class RendererManager extends CanvasRenderer {
+class RendererManager extends WebGLRenderer {
 
   constructor() {
 
-    super(config.stageWidth, config.stageHeight);
+    super(config.stageWidth, config.stageHeight)
 
     this.resolution = 1
-    // this.resolution = window.devicePixelRatio
-
-    // this.width = config.stageWidth
-    // this.height = config.stageHeight
+    
     this.center = new Point(this.width * 0.5, this.height * 0.5)
 
-    // this.resize( this.width, this.height )
+    this._paused = false
 
     this.viewport = new Rectangle(0,0, config.viewport.width, config.viewport.height )
     this.screen = new Rectangle(0,0, config.viewport.width, config.viewport.height )
@@ -37,6 +34,22 @@ class RendererManager extends CanvasRenderer {
 
   }
 
+  get pause() {
+    return this._paused
+  }
+
+  set pause( value ) {
+    this._paused = value
+
+    console.log( this._paused, ticker )
+
+    if(this._paused) {
+      ticker.shared.stop()
+    } else {
+      ticker.shared.start()
+    }
+  }
+
   stop () {
     
     if(!this.animateFunc) {
@@ -50,13 +63,13 @@ class RendererManager extends CanvasRenderer {
     this.render( StateManager.stageContainer )
   }
 
-    resizeHandler() {
+  resizeHandler() {
     window.scrollTo(0,1)
 
-    // geral scale for the viewport
+
+    setTimeout( () => window.scrollTo(0,1), 400)
+
     this.scale = Math.min(window.innerWidth / this.viewport.width, window.innerHeight / this.viewport.height )
-
-
 
     // basic size counting just the viewport scale
     const width  = Math.floor( this.viewport.width * this.scale )
@@ -66,16 +79,16 @@ class RendererManager extends CanvasRenderer {
     const offsetY = (window.innerHeight - height)
 
 
-    this.resize( (width+offsetX)/this.scale, (height+offsetY)/this.scale )
+    this.resize( (width + offsetX) / this.scale, (height + offsetY) / this.scale )
 
-    this.view.style.width = (window.innerWidth) + "px"
-    this.view.style.height = (window.innerHeight) + "px"
+    this.view.style.width = `${window.innerWidth}px`
+    this.view.style.height = `${window.innerHeight}px`
 
-    this.center.x = this.width*0.5
-    this.center.y = this.height*0.5
+    this.center.x = this.width * 0.5
+    this.center.y = this.height * 0.5
 
-    this.viewport.x = offsetX*0.5/this.scale
-    this.viewport.y = offsetY*0.5/this.scale
+    this.viewport.x = offsetX * 0.5 / this.scale
+    this.viewport.y = offsetY * 0.5 / this.scale
 
 
     this.screen.x =  -this.center.x
@@ -91,27 +104,6 @@ class RendererManager extends CanvasRenderer {
     
   }
 
-  // resizeHandler () {
-
-  //   window.scrollTo(0,1)
-
-  //   this.scale = Math.min(window.innerWidth / this.width, window.innerHeight / this.height );
-  
-  //   const width  = Math.floor( this.width * this.scale )
-  //   const height = Math.floor( this.height * this.scale )
-
-  //   const offsetX = (window.innerWidth - width) * 0.5
-  //   const offsetY = (window.innerHeight - height) * 0.5
-
-  //   this.view.style.width = width + "px"
-  //   this.view.style.height = height + "px"
-
-  //   this.view.style.marginTop = offsetY + 'px'
-  //   this.view.style.marginLeft = offsetX + 'px'
-
-  //   this.emit( EVENTS.RESIZE, { width: this.width, height: this.height } )
-
-  // }
 }
 
 export default new RendererManager()

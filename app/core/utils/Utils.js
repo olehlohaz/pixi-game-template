@@ -16,20 +16,30 @@ class Utils {
   }
   
   formatText(value, format) {
-  	switch(format) {
-  		case TEXT_FORMAT.STRING:
-  			return value.toString()
-  		break;
-  		case TEXT_FORMAT.INTEGER:
-  			return parseInt(value)
-  		break;
-  		case TEXT_FORMAT.FLOAT:
-  			return parseFloat(value)
-  		break;
-  		default:
-  			return value
-  		break;
-  	}
+    switch(format) {
+      case TEXT_FORMAT.STRING:
+        return value.toString()
+      break;
+      case TEXT_FORMAT.INTEGER:
+        return parseInt(value)
+      break;
+      case TEXT_FORMAT.FLOAT:
+        return parseFloat(value)
+      break;
+      default:
+        return value
+      break;
+    }
+  }
+  getParams() {
+    
+    const params = {}
+    const list = window.location.search.substr(1).split('&').map( (elem) => {
+      const item = elem.split('=')
+      params[ item[0] ] = item[1]
+    })
+
+    return params
   }
 }
 

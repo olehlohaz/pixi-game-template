@@ -251,7 +251,10 @@ export default class Tween extends utils.EventEmitter {
 
   update (deltaTime) {
 
-    // console.log(deltaTime)
+    if( !this._object ) {
+      return false
+    }
+
     this._currentTime += deltaTime/TARGET_FPMS
     this._relativeTime += deltaTime/TARGET_FPMS
 

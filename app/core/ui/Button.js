@@ -1,16 +1,16 @@
 import { Utils }              from '../core'
 
-import { Sprite, utils }  from 'pixi.js'
+import { extras, Sprite, utils }  from 'pixi.js'
 
 export default class Button extends Sprite {
 
   constructor ( texture, frame, frameOver, frameOut, frameClicked, frameDisabled ) {
-  	super( Utils.getTexture(texture, frame) )
+    super( Utils.getTexture(texture, frame) )
 
     this.anchor.set(0.5)
- 	
+  
     this.isDisabled = false
-  	this.interactive = true
+    this.interactive = true
     this.buttonMode = true
 
     this.states = new Map()
@@ -37,8 +37,22 @@ export default class Button extends Sprite {
     if(frameDisabled) {
       this.addState('disabled', texture, frameDisabled)
     }
+  }
 
-
+  addText( x, y, text, font) {
+    this.textLabel = new extras.BitmapText( text, { font: font } )
+    this.addChild( this.textLabel )
+    this.setTextPosition( x, y )
+    return this.textLabel
+  }
+  setTextPosition(x,y) {
+    this.textLabel.position.set( x, y )
+  }
+  set text(value) {
+    if(!this.textLabel) {
+      return
+    } 
+    this.textLabel.text = value
   }
 
   onMouseOver(callback) {
@@ -56,6 +70,10 @@ export default class Button extends Sprite {
     this.on( 'mousedown', callback )
     this.on( 'touchstart', callback )
 
+  }
+  onRelease( callback ) {
+    this.on( 'mouseup', callback )
+    this.on( 'touchend', callback )
   }
 
   addState( name, texture, frame ) {

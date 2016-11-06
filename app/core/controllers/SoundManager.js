@@ -1,6 +1,6 @@
 import { utils, loader }  from 'pixi.js'
 import { Howler, Howl }   from 'howler'
-import { AUDIO_LOADED }   from '../core'
+import { EVENTS }   from '../core'
 
 
 
@@ -12,35 +12,87 @@ class SoundManager extends utils.EventEmitter {
 
     this.isSpriteDefined = false
 
-    this.sfx = new Howl({
-      src: ['./assets/sfx.mp3', './assets/sfx.ogg'],
-      preload: false
-    })
+    const Resource = PIXI.loaders.Resource
+    Resource.setExtensionLoadType( "wav", Resource.LOAD_TYPE.AUDIO )
+    Resource.setExtensionLoadType( "mp3", Resource.LOAD_TYPE.AUDIO )
+    Resource.setExtensionLoadType( "ogg", Resource.LOAD_TYPE.AUDIO )
+    Resource.setExtensionLoadType( "webm", Resource.LOAD_TYPE.AUDIO )
 
-    this.sfx.once( 'load', () => this.onLoadComplete() )
+    loader.use( this.middlewhere() )
 
+    this._audios = new Map()
+    this._sounds = new Map()
+  }
+
+  set mute(value) {
+
+    this._mute = value
+    Howler.mute( this._mute )
+
+  }
+  get mute() {
+    return this._mute
+  }
+
+  muteAudio(sound, value = null) {
+    if(value === null) {
+      return this.audio(sound)._muted
+    }
+
+    this.audio(sound).mute(value)
+  }
+
+  audio( value ) {
+    return this._audios.get( value )
+  }
+  setSound( name, id ) {
+    this._sounds.set(name, id)
+  }
+
+  getSound( name ) {
+    return this._sounds.get(name)
+  }
+
+  middlewhere() {
+    const self = this
+
+    return function(resource, next) {
+
+      if ( resource && resource.isJson && resource.data && resource.data.resources ) {
+          
+          const _index = resource.url.lastIndexOf('/')
+          const path = resource.url.substr(0, _index)
+
+          const spritename = self.setupAudiosprite( resource.data.spritemap )
+
+          const audioFiles = resource.data.resources.map( (sound) => { return `${path}/${sound}` } )
+
+          resource.data = new Howl({
+            src: audioFiles,
+            preload: true,
+            sprite: spritename
+          })
+
+          self._audios.set( resource.name, resource.data )
+
+          resource.data.once( 'load', () => next() )
+
+      } else {
+        next()
+      }
+    }
   }
 
 
-  load () {
-    this.sfx.load()
-  }
-
-
-  setupAudiosprite() {
-    let rawSprites = loader.resources['audiosprite'].data.spritemap
+  setupAudiosprite( spritemap ) {
     
     let howlerSprite = {}
     
-    for(let key of Object.keys( rawSprites )) {
-
-      howlerSprite[ key ] = this.AudiospriteToHowler( rawSprites[ key ] )
-
+    for(let key of Object.keys( spritemap )) {
+      howlerSprite[ key ] = this.AudiospriteToHowler( spritemap[ key ] )
     }
 
-    this.sfx._sprite = howlerSprite
-
-    this.isSpriteDefined = true    
+    return howlerSprite
   }
 
 
@@ -49,33 +101,6 @@ class SoundManager extends utils.EventEmitter {
       data.start * 1000, (data.end - data.start) * 1000, data.loop
     ];
   }
-
-
-  play (name, volume) {
-    if( !this.isSpriteDefined ) {
-      this.setupAudiosprite()
-    }
-    
-    let soundId = this.sfx.play( name )
-    this.sfx.volume(volume || 1, soundId)
-
-    return soundId;
-  }
-
-  stop (id) {
-    this.sfx.stop( id )
-  }
-
-
-  onLoadComplete() {
-    this.emit(AUDIO_LOADED, this.sfx)
-  }
-
-  addLoadListener ( callback, callbackContext ) {
-    this.on(AUDIO_LOADED, callback, callbackContext, this.sfx)
-  }
-
-
   
 }
 

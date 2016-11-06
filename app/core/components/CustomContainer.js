@@ -19,6 +19,8 @@ export default class CustomContainer extends Container {
   destroy() {
 
     for( const [indx, value] of this.children.entries() ) {
+      TweenManager.removeFrom(value)
+      this.removeChild(value)
       value.destroy()
     }
 
