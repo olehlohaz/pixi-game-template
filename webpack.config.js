@@ -3,6 +3,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var pkg = require('./package.json')
 var DEBUG = process.env.NODE_ENV !== 'production'
 var util = require('util')
+var WebpackStrip = require('webpack-strip')
 var entry = {
   game: ['./app.js']
 }
@@ -22,6 +23,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       { from: 'assets', to: './assets' },
+      { from: 'lib',    to: './lib' },
     ])
   ],
   module: {
@@ -32,7 +34,11 @@ module.exports = {
         { test: /\.mp3$|\.ogg$/,          exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
         { test: /\.json$/,                exclude: /node_modules/,                                  loader: "json"},
         { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'json'},
-        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'p2'), loader: 'json'}
+        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'p2'), loader: 'json'},
+
+        { test: /node_modules\/pixi\.js/, include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'ify' },
+
+        { test: /\.js$/, loader: WebpackStrip.loader( DEBUG ? 'dsfewfmcds' : 'console.log') }
       ],
       postLoaders: [{
         include: path.join(__dirname, 'node_modules', 'pixi.js'),
