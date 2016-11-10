@@ -14,11 +14,11 @@ class GameAnalytics extends utils.EventEmitter {
 
     this.enabled = false
 
-    this.sandBoxKey = '5c6bcb5402204249437fb5a7a80a4959'
-    this.sandBoxSecret = '16813a12f718bc5c620f56944e1abc3ea13ccbac'
+    this.sandBoxKey = '00000000000000000000000000000000'
+    this.sandBoxSecret = '0000000000000000000000000000000000000000'
     
-    this.gameKey = '28cced813ea37c0ba62e4e6f6e4e7d1a'
-    this.secretKey = '7b6737ff7bd7afcaa5bdd69468a8403f0cb64c1d'
+    this.gameKey = '0000000000000000000000000000000000000000'
+    this.secretKey = '0000000000000000000000000000000000000000'
 
     var category = 'design'
 

@@ -12,18 +12,18 @@ class App42Shepartz extends utils.EventEmitter {
 
     super()
 
-    this.leaderboardId = '2061eb60e5de461b89a819d0ea091cea'
-    this.writeAPI = '10e48559e5294ccdbf6c614396eef6ac'
-    this.readAPI = '54a63478baf44f1fb845527d33fdda67'
+    this.leaderboardId = ''
+    this.writeAPI = ''
+    this.readAPI = ''
 
 
     const s2 = this.s4()
-    this.suffix = `sharbelfscom${s2}`
+    this.suffix = `suffix_name${s2}`
   }
   
   init() {
 
-    App42.initialize("d1ae5870a8bc085ee7f4c2f7a54f892e5d280f0f235bb396b5c8a2a0d312398c","b5b86e1eb48c91e3809eff66171dd6143b81871400b7326f2259ed9441f66dfb")
+    App42.initialize("","")
 
     this.scoreBoardService = new App42ScoreBoard()
     this.gameName = "Crazy Racers"

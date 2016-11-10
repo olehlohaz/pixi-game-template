@@ -12,9 +12,9 @@ class HeroicLabs extends utils.EventEmitter {
 
     super()
 
-    this._leaderboard = '3e158aa004e542ca928ba237c0e56356'
-    this.writeAPI = '10e48559e5294ccdbf6c614396eef6ac'
-    this.readAPI = '54a63478baf44f1fb845527d33fdda67'
+    this._leaderboard = '00000000000000000000000000000000'
+    this.writeAPI = '00000000000000000000000000000000'
+    this.readAPI = '00000000000000000000000000000000'
 
 
     const s2 = this.s4()
