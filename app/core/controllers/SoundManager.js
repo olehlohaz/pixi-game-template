@@ -1,6 +1,6 @@
-import { utils, loader }  from 'pixi.js'
+import { utils, loader, loaders }  from 'pixi.js'
 import { Howler, Howl }   from 'howler'
-import { EVENTS }   from '../core'
+import { EVENTS }         from '../core'
 
 
 
@@ -8,17 +8,18 @@ class SoundManager extends utils.EventEmitter {
 
   constructor() {
 
-    super();
+    super()
 
-    this.isSpriteDefined = false
+    this.listAudioExtensions = ['wav', 'mp3', 'ogg', 'ac3', 'm4a', 'webm']
 
     const Resource = PIXI.loaders.Resource
-    Resource.setExtensionLoadType( "wav", Resource.LOAD_TYPE.AUDIO )
-    Resource.setExtensionLoadType( "mp3", Resource.LOAD_TYPE.AUDIO )
-    Resource.setExtensionLoadType( "ogg", Resource.LOAD_TYPE.AUDIO )
-    Resource.setExtensionLoadType( "webm", Resource.LOAD_TYPE.AUDIO )
+
+    for(const ext of this.listAudioExtensions) {
+      Resource.setExtensionLoadType( ext, Resource.LOAD_TYPE.AUDIO )
+    }
 
     loader.use( this.middlewhere() )
+    loader.pre( this.preMiddlewhere() )
 
     this._audios = new Map()
     this._sounds = new Map()
@@ -53,29 +54,82 @@ class SoundManager extends utils.EventEmitter {
     return this._sounds.get(name)
   }
 
+  getPath(urlPath) {
+    const index = urlPath.lastIndexOf('/')
+    const path = urlPath.substr(0, index)
+
+    return path
+  }
+  removePathExtension(urlPath) {
+    const index = urlPath.lastIndexOf('.')
+    const path = urlPath.substr(0, index)
+
+    return path
+  }
+  getExtension( urlPath ) {
+    const index = urlPath.lastIndexOf('.')
+    const ext = urlPath.substr( index + 1 )
+
+    return ext
+  }
+
+  preMiddlewhere() {
+    const self = this
+
+    return function(resource, next) {
+
+      if(resource.loadType === loaders.Resource.LOAD_TYPE.AUDIO) {
+        const ext = self.getExtension(resource.url)
+        if(ext === '*') {
+          resource.isComplete = true
+          resource.isAudio = true
+        }
+      }
+
+      next()
+    }
+  }
+
   middlewhere() {
     const self = this
 
     return function(resource, next) {
 
       if ( resource && resource.isJson && resource.data && resource.data.resources ) {
-          
-          const _index = resource.url.lastIndexOf('/')
-          const path = resource.url.substr(0, _index)
+        
+        const path = self.getPath(resource.url)
 
-          const spritename = self.setupAudiosprite( resource.data.spritemap )
+        const spritename = self.setupAudiosprite( resource.data.spritemap )
 
-          const audioFiles = resource.data.resources.map( (sound) => { return `${path}/${sound}` } )
+        const audioFiles = resource.data.resources.map( (sound) => { return `${path}/${sound}` } )
 
-          resource.data = new Howl({
-            src: audioFiles,
-            preload: true,
-            sprite: spritename
-          })
+        resource.data = new Howl({
+          src: audioFiles,
+          preload: true,
+          sprite: spritename
+        })
 
-          self._audios.set( resource.name, resource.data )
+        self._audios.set( resource.name, resource.data )
 
-          resource.data.once( 'load', () => next() )
+        resource.data.once( 'load', next )
+
+      } if(resource && resource.isAudio) {
+
+        let audioFiles = [ resource.url ]
+
+        if(self.getExtension(resource.url) === '*') {
+          const path = self.removePathExtension(resource.url)
+          audioFiles = resource.metadata.extension.map( (ext) => { return `${path}.${ext}` } )
+        }
+  
+        resource.data = new Howl({
+          src: audioFiles,
+          preload: true
+        })
+
+        self._audios.set( resource.name, resource.data )
+
+        resource.data.once( 'load', next )
 
       } else {
         next()

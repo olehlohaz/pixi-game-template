@@ -2,6 +2,13 @@ import { Utils }              from '../core'
 
 import { extras, Sprite, utils }  from 'pixi.js'
 
+/**
+ * Button.js
+ *
+ * 
+ *
+ */
+ 
 export default class Button extends Sprite {
 
   constructor ( texture, frame, frameOver, frameOut, frameClicked, frameDisabled ) {
@@ -45,8 +52,8 @@ export default class Button extends Sprite {
     this.setTextPosition( x, y )
     return this.textLabel
   }
-  setTextPosition(x,y) {
-    this.textLabel.position.set( x, y )
+  setTextPosition( x, y ) {
+    this.textLabel.position.set( x - this.textLabel.width * 0.5, y  - this.textLabel.height * 0.5 )
   }
   set text(value) {
     if(!this.textLabel) {

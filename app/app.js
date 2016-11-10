@@ -9,13 +9,14 @@
 import './index.html'
 import { config }         from '../package.json'
 import { StateManager, RendererManager }  from './core/core'
-import { PreloaderScene, GameScene }        from './game/game'
+import { SoundDemo, PreloaderScene, GameScene }        from './game/game'
 
 RendererManager.resizeHandler()
 
 
 StateManager.addState( 'Game',      GameScene )
 StateManager.addState( 'Preloader', PreloaderScene )
+StateManager.addState( 'SoundDemo', SoundDemo )
 
 
 StateManager.setActive( 'Preloader' )

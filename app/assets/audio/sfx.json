@@ -1,0 +1,63 @@
+{
+  "resources": [
+    "sfx.ogg",
+    "sfx.mp3"
+  ],
+  "spritemap": {
+    "Buy_game_coins": {
+      "start": 0,
+      "end": 0.42857142857142855,
+      "loop": false
+    },
+    "Game_collect": {
+      "start": 2,
+      "end": 2.4340362811791385,
+      "loop": false
+    },
+    "Game_Explosion_Sound": {
+      "start": 4,
+      "end": 5.1473242630385485,
+      "loop": false
+    },
+    "Game_gun_shot_sound": {
+      "start": 7,
+      "end": 7.468752834467121,
+      "loop": false
+    },
+    "Game_jump": {
+      "start": 9,
+      "end": 9.544648526077097,
+      "loop": false
+    },
+    "Game_menu_swish": {
+      "start": 11,
+      "end": 11.558027210884354,
+      "loop": false
+    },
+    "Game_points_counting": {
+      "start": 13,
+      "end": 14.258934240362812,
+      "loop": false
+    },
+    "Game_pop_click": {
+      "start": 16,
+      "end": 16.428571428571427,
+      "loop": false
+    },
+    "Game_timer_clock_sound": {
+      "start": 18,
+      "end": 22,
+      "loop": false
+    },
+    "Win_and_Level_Up": {
+      "start": 23,
+      "end": 24.590272108843536,
+      "loop": false
+    },
+    "Wrong_error_sound": {
+      "start": 26,
+      "end": 27.084829931972788,
+      "loop": false
+    }
+  }
+}
