@@ -14,9 +14,7 @@ class RendererManager extends WebGLRenderer {
 
   constructor() {
 
-    super(config.stageWidth, config.stageHeight)
-
-    this.resolution = 1
+    super( config.stageWidth, config.stageHeight )
     
     this.center = new Point(this.width * 0.5, this.height * 0.5)
 
@@ -73,31 +71,26 @@ class RendererManager extends WebGLRenderer {
   resizeHandler() {
     window.scrollTo(0,1)
 
-
     setTimeout( () => window.scrollTo(0,1), 400)
 
-    this.scale = Math.min(window.innerWidth / this.viewport.width, window.innerHeight / this.viewport.height )
+    this.scale = Math.min(window.innerWidth / config.viewport.width, window.innerHeight / config.viewport.height )
 
-    // basic size counting just the viewport scale
-    const width  = Math.floor( this.viewport.width * this.scale )
-    const height = Math.floor( this.viewport.height * this.scale )
+    const width  = Math.floor( config.viewport.width * this.scale )
+    const height = Math.floor( config.viewport.height * this.scale )
 
     const offsetX = (window.innerWidth - width)
     const offsetY = (window.innerHeight - height)
 
-
     this.resize( (width + offsetX) / this.scale, (height + offsetY) / this.scale )
-
-    // this.view.style.width = `${window.innerWidth}px`
-    // this.view.style.height = `${window.innerHeight}px`
+    
     this.view.style.transformOrigin = "0 0"
-    this.view.style.transform = `scale( ${this.scale} )`
+    this.view.style.transform = `scale( ${this.scale/this.resolution} )`
 
-    this.center.x = this.width * 0.5
-    this.center.y = this.height * 0.5
+    this.center.x = this.width * 0.5 / this.resolution
+    this.center.y = this.height * 0.5 / this.resolution
 
-    this.viewport.x = offsetX * 0.5 / this.scale
-    this.viewport.y = offsetY * 0.5 / this.scale
+    this.viewport.x = -this.viewport.width * 0.5
+    this.viewport.y = -this.viewport.height * 0.5
 
 
     this.screen.x =  -this.center.x
@@ -106,11 +99,9 @@ class RendererManager extends WebGLRenderer {
     this.screen.width = this.width
     this.screen.height = this.height
     
-
-    StateManager.stageContainer.position.set( this.center.x, this.center.y )
+    StateManager.stageContainer.position.set( this.width * 0.5 / this.resolution, this.height * 0.5 / this.resolution )
 
     this.emit( EVENTS.RESIZE, { width: this.width, height: this.height } )
-    
   }
 
 }
