@@ -2,6 +2,13 @@ import { AnimationManager, RendererManager, Timer }  from '../core'
 import { Container, utils, TARGET_FPMS, ticker }  from 'pixi.js'
 import p2  from 'p2'
 
+/**
+ * P2Manager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
+
 class P2Manager extends utils.EventEmitter {
 
   constructor() {
@@ -37,7 +44,6 @@ class P2Manager extends utils.EventEmitter {
 
 
   onAddBody(data) {
-    // console.log( data )
     if(!data.body.sprite) {
       return
     }
@@ -84,8 +90,6 @@ class P2Manager extends utils.EventEmitter {
   }
 
   createWorld( gravityX = 0, gravityY = 9.82) {
-
-    console.log('------ createWorld ------')
 
     this.createCollisionGroup('EVERYTHING')
 

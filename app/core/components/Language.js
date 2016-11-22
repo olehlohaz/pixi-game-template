@@ -1,3 +1,9 @@
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
 
 export default class Language {
 

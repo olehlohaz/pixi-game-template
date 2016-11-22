@@ -3,6 +3,13 @@ import {AnimationManager, TweenManager, StateManager, EVENTS }      from '../cor
 import { CanvasRenderer, WebGLRenderer, utils, loader, Point, Rectangle, ticker }  from 'pixi.js'
 import { config } from '../../../package.json'
 
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
+
 class RendererManager extends WebGLRenderer {
 
   constructor() {
@@ -20,7 +27,7 @@ class RendererManager extends WebGLRenderer {
 
 
     document.body.appendChild(this.view)
-    this.autoResize = true
+    this.autoResize = false
 
     window.addEventListener('resize', () => this.resizeHandler() )
     
@@ -81,8 +88,10 @@ class RendererManager extends WebGLRenderer {
 
     this.resize( (width + offsetX) / this.scale, (height + offsetY) / this.scale )
 
-    this.view.style.width = `${window.innerWidth}px`
-    this.view.style.height = `${window.innerHeight}px`
+    // this.view.style.width = `${window.innerWidth}px`
+    // this.view.style.height = `${window.innerHeight}px`
+    this.view.style.transformOrigin = "0 0"
+    this.view.style.transform = `scale( ${this.scale} )`
 
     this.center.x = this.width * 0.5
     this.center.y = this.height * 0.5

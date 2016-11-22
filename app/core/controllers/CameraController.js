@@ -1,6 +1,12 @@
 import { RendererManager, P2Manager, P2Body, AnimationManager, Tween }         from '../core'
 import { Sprite, Point, ticker }  from 'pixi.js'
 
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
 export default class CameraController {
 
   constructor() {

@@ -1,11 +1,15 @@
 import { GameData, RendererManager, TweenManager } from '../core'
 
 import { utils } from 'pixi.js'
-// import CryptoJS, { MD5, enc } from 'crypto-js'
-// import platform from 'platform'
 
 
 
+/**
+ * App42Shepartz.js
+ *
+ *
+ */
+ 
 class App42Shepartz extends utils.EventEmitter {
 
   constructor() {
@@ -26,7 +30,7 @@ class App42Shepartz extends utils.EventEmitter {
     App42.initialize("","")
 
     this.scoreBoardService = new App42ScoreBoard()
-    this.gameName = "Crazy Racers"
+    this.gameName = "GameName"
 
     console.log(this.scoreBoardService)
 

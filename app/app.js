@@ -8,9 +8,10 @@
 
 import './index.html'
 import { config }         from '../package.json'
-import { StateManager, RendererManager }  from './core/core'
+import { Device, StateManager, RendererManager }  from './core/core'
 import { SoundDemo, PreloaderScene, GameScene }        from './game/game'
 
+Device.init()
 RendererManager.resizeHandler()
 
 

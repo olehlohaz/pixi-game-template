@@ -116,10 +116,16 @@ class SoundManager extends utils.EventEmitter {
       } if(resource && resource.isAudio) {
 
         let audioFiles = [ resource.url ]
+        const path = self.removePathExtension(resource.url)
 
         if(self.getExtension(resource.url) === '*') {
-          const path = self.removePathExtension(resource.url)
           audioFiles = resource.metadata.extension.map( (ext) => { return `${path}.${ext}` } )
+        } else {
+
+          if(resource.metadata.fallback) {
+            audioFiles = audioFiles.concat(resource.metadata.fallback.map( (ext) => { return `${path}.${ext}` } ))
+          }
+
         }
   
         resource.data = new Howl({

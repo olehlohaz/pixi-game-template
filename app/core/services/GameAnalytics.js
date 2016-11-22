@@ -5,7 +5,12 @@ import CryptoJS, { MD5, enc } from 'crypto-js'
 import platform from 'platform'
 
 
-
+/**
+ * GameAnalytics.js
+ *
+ *
+ */
+ 
 class GameAnalytics extends utils.EventEmitter {
 
   constructor() {

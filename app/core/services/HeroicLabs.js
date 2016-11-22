@@ -1,11 +1,12 @@
 import { GameData, RendererManager, TweenManager } from '../core'
 
 import { utils } from 'pixi.js'
-// import CryptoJS, { MD5, enc } from 'crypto-js'
-// import platform from 'platform'
-
-
-
+/**
+ * HeroicLabs.js
+ *
+ *
+ */
+ 
 class HeroicLabs extends utils.EventEmitter {
 
   constructor() {

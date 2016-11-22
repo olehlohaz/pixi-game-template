@@ -3,7 +3,12 @@ import {RendererManager, Tween, TWEEN } from '../core'
 import { Sprite, Rectangle, Texture, Container, Graphics } from 'pixi.js'
 
 
-
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
 export default class PreloaderBar extends Container {
 
   constructor(colorLoader, colorDot) {

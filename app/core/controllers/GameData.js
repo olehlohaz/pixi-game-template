@@ -1,4 +1,10 @@
-
+/**
+ * GameData.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
+ 
 class GameData {
 
   constructor() {

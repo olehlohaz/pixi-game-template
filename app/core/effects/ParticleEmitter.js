@@ -3,6 +3,13 @@ import Particles  from 'pixi-particles'
 
 import { Container, ParticleContainer, particles, loader } from 'pixi.js'
 
+
+/**
+ * ParticleEmitter.js
+ *
+ *
+ */
+ 
 export default class ParticleEmitter extends Container {
 
   constructor(imageList, config, type) {

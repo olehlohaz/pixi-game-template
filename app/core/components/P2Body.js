@@ -2,6 +2,12 @@ import { P2Manager, CONFIG, CustomContainer }  from '../core'
 import { Graphics, utils, Point }  from 'pixi.js'
 import p2  from 'p2'
 
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
 export default class P2Body extends CustomContainer {
 
   constructor( world, x = 0, y = 0, mass = 1, angle = 0 ) {
@@ -11,14 +17,7 @@ export default class P2Body extends CustomContainer {
     this.world = world
 
     this.createBody({
-      // position: [ x/P2Manager.SIZE, y/P2Manager.SIZE ],
       mass: mass,
-      // angle: Math.radians( angle )
-      // collisionGroup // Math.pow(2,3)  // Belongs to the SHIP group
-      // collisionMask   BULLET | SHIP  // Math.pow(2,3)  // Only collide with the ASTEROID group
-      // fixedRotation
-      // damping
-      // angularDamping
     })
 
     

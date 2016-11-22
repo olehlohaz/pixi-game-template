@@ -1,5 +1,11 @@
 import { CONFIG } from '../core'
 
+/**
+ * Locker.js
+ *
+ *
+ */
+ 
 class Locker {
 
   constructor() {
@@ -22,7 +28,7 @@ class Locker {
     let isValid = false
     for(const data of this.listSites) {
       
-      if(this.current.indexOf(atob(data)) === 0) {
+      if(this.current.indexOf(data) === 0) {
         isValid = true
       }
     }

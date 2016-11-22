@@ -1,5 +1,12 @@
 import { Container, utils, ticker }  from 'pixi.js'
 
+
+/**
+ * TweenManager.js
+ *
+ *
+ */
+
 class TweenManager {
 
   constructor() {

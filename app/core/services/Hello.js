@@ -1,5 +1,12 @@
 import { name, version, developer } from '../../../package.json'
 
+/**
+ * Hello.js
+ *
+ *
+ */
+ 
+ 
 class Hello {
 
   constructor() {

@@ -1,7 +1,13 @@
 import { Language }      from '../core'
-
 import { WebGLRenderer, utils, loader, Point }  from 'pixi.js'
 
+/**
+ * LanguageManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
+ 
 class LanguageManager {
 
   constructor() {

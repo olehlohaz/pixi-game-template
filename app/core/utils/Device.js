@@ -1,6 +1,9 @@
-
-
-
+/**
+ * Device.js
+ *
+ *
+ */
+ 
 class Device {
 
   constructor() {
@@ -58,9 +61,6 @@ class Device {
       this.desktop = false;
     }
 
-    // this.init()
-
-    // console.log(this.data)
   }
 
   init() {
@@ -206,8 +206,6 @@ class Device {
         break;
     }
     
-    // flash (you'll need to include swfobject)
-    /* script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" */
     var flashVersion = 'no check';
     if (typeof swfobject != 'undefined') {
       var fv = swfobject.getFlashPlayerVersion();

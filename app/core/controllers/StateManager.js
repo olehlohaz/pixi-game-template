@@ -1,7 +1,11 @@
 import { Tween, EVENTS, RendererManager }          from '../core'
 import { Container}   from 'pixi.js'
 
-
+/**
+ * StateManager.js
+ *
+ *
+ */
 
 class StateManager {
 

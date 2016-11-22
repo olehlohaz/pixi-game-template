@@ -3,7 +3,12 @@ import { RendererManager, EVENTS, TweenManager } from '../core'
 import { Container, Graphics, ticker } from 'pixi.js'
 
 
-
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
 export default class StateContainer extends Container {
 
   constructor() {

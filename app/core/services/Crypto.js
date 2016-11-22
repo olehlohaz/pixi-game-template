@@ -1,6 +1,12 @@
 import { CONFIG } from '../core'
 import CryptoJS, { AES, enc } from 'crypto-js'
 
+/**
+ * Crypto.js
+ *
+ *
+ */
+ 
 class Crypto {
 
   constructor() {

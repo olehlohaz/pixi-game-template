@@ -1,6 +1,13 @@
 import { utils, loader }  from 'pixi.js'
 import { TEXT_FORMAT } from '../core'
 
+/**
+ * Utils.js
+ *
+ *
+ */
+ 
+ 
 class Utils {
 
   constructor() {

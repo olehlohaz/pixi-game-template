@@ -2,7 +2,12 @@ import { RendererManager } from '../core'
 import { Container, ticker, TARGET_FPMS } from 'pixi.js'
 import eventemitter3 from 'eventemitter3'
 
-
+/**
+ * RendererManager.js
+ *
+ * The main entry point, appends PIXI to the DOM
+ *
+ */
 class TimeEvent {
 
   constructor(callback, timeInterval = 1000, repeatTotal = 0) {

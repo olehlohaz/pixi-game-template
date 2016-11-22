@@ -1,6 +1,12 @@
 import {TweenManager}  from '../core'
 import { utils, ticker, TARGET_FPMS }  from 'pixi.js'
 
+/**
+ * Tween.js
+ *
+ *
+ */
+ 
 export default class Tween extends utils.EventEmitter {
 
   constructor(object) {
