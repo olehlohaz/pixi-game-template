@@ -11,7 +11,7 @@ var entry = {
 module.exports = {
   context: path.join(__dirname, 'app'),
   entry: entry,
-  debug : DEBUG,
+  // debug : DEBUG,
   target : 'web',
   devtool : DEBUG ? 'inline-source-map' : false,
   output: {
@@ -27,26 +27,25 @@ module.exports = {
     ])
   ],
   module: {
-      loaders: [
-        { test: /\.js$/,                  exclude: /node_modules/,                                  loader: "babel-loader", query:{presets:['es2015']}},
-        { test: /\.html$/,                exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
-        { test: /\.jpe?g$|\.svg$|\.png$/, exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
-        { test: /\.mp3$|\.ogg$/,          exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
-        { test: /\.json$/,                exclude: /node_modules/,                                  loader: "json"},
-        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'json'},
-        { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'p2'), loader: 'json'},
+    rules: [
+      { test: /\.js$/,                  exclude: /node_modules/,                                  loader: "babel-loader", query:{ presets:['latest'] } },
+      { test: /\.html$/,                exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
+      { test: /\.jpe?g$|\.svg$|\.png$/, exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
+      { test: /\.mp3$|\.ogg$/,          exclude: /node_modules/,                                  loader: "file-loader?name=[path][name].[ext]"},
+      { test: /\.json$/,                exclude: /node_modules/,                                  loader: "json-loader"},
+      { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: "json-loader"},
+      { test: /\.json$/,                include: path.join(__dirname, 'node_modules', 'p2'), loader: "json-loader"},
 
-        { test: /node_modules\/pixi\.js/, include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'ify' },
-
-        { test: /\.js$/, loader: WebpackStrip.loader( DEBUG ? 'dsfewfmcds' : 'console.log') }
-      ],
-      postLoaders: [{
-        include: path.join(__dirname, 'node_modules', 'pixi.js'),
-        loader: 'transform?brfs'
-      },
+      { test: /node_modules\/pixi\.js/, include: path.join(__dirname, 'node_modules', 'pixi.js'), loader: 'ify-loader' },
       {
+        include: path.join(__dirname, 'node_modules', 'pixi.js'),
+        enforce: "post",
+        loader: 'transform-loader?brfs'
+      },{
         include: path.join(__dirname, 'node_modules', 'p2'),
-        loader: 'transform?brfs'
-      }]
+        enforce: "post",
+        loader: 'transform-loader?brfs'
+      }
+    ]
   }
 }
