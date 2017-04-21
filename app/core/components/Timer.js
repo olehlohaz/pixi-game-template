@@ -1,5 +1,5 @@
 import { RendererManager } from '../core'
-import { Container, ticker, TARGET_FPMS } from 'pixi.js'
+import { Container, ticker, settings } from 'pixi.js'
 import eventemitter3 from 'eventemitter3'
 
 /**
@@ -56,7 +56,15 @@ class Timer extends eventemitter3 {
   }
 
   setTimeout(callback, time = 1000) {
-    this.setInterval(callback, time, 0)
+    return this.setInterval(callback, time, 0)
+  }
+
+  clear(id) {
+    if(id) {
+      this.events.delete(id)
+    } else {
+      this.events.clear()
+    }
   }
 
   setInterval(callback, time = 1000, repeat = 0) {
@@ -66,19 +74,18 @@ class Timer extends eventemitter3 {
 
     this.events.set( timeEvent.id, timeEvent )
 
+    return timeEvent
   }
 
   update(time) {
 
     for( const [name, data] of this.events.entries() ) {
-      if(!data.update(time/TARGET_FPMS)) {
+      if( !data.update( time / settings.TARGET_FPMS ) ) {
         this.events.delete( name )
       }
     }
 
   }
-
-
 }
 
 export default new Timer()

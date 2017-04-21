@@ -16,19 +16,43 @@ class RendererManager extends WebGLRenderer {
 
     super( config.stageWidth, config.stageHeight )
     
+  }
+
+  init(parentName = null) {
     this.center = new Point(this.width * 0.5, this.height * 0.5)
 
     this._paused = false
 
-    this.viewport = new Rectangle(0,0, config.viewport.width, config.viewport.height )
-    this.screen = new Rectangle(0,0, config.viewport.width, config.viewport.height )
+    this.viewport = new Rectangle( 0, 0, config.viewport.width, config.viewport.height )
+    this.screen = new Rectangle( 0, 0, config.viewport.width, config.viewport.height )
 
-
-    document.body.appendChild(this.view)
+    if(parentName) {
+      document.getElementById(parentName).appendChild( this.view )
+    } else {
+      document.body.appendChild( this.view )
+    }
     this.autoResize = false
 
+    StateManager.init()
+
     window.addEventListener('resize', () => this.resizeHandler() )
-    
+
+    this.resizeHandler()
+  }
+
+  initFullScreen(elem = null) {
+    const element = elem || this.view
+
+    if(element.requestFullscreen) {
+      element.requestFullscreen()
+    } else if(element.mozRequestFullScreen) {
+      element.mozRequestFullScreen()
+    } else if(element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen()
+    } else if(element.msRequestFullscreen) {
+      element.msRequestFullscreen()
+    }
+
   }
 
   start () {
@@ -45,8 +69,6 @@ class RendererManager extends WebGLRenderer {
 
   set pause( value ) {
     this._paused = value
-
-    console.log( this._paused, ticker )
 
     if(this._paused) {
       ticker.shared.stop()

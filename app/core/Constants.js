@@ -2,6 +2,8 @@
 * App constants definition
 */
 
+import { Constant }      from './core'
+
 Object.assign(String.prototype, {
   padLeft(letter, length) {
     return String( letter.repeat( length ) + this ).slice( -length )
@@ -49,17 +51,19 @@ Math.degrees = (radians) => {
 }
 
 
-export const CONFIG = {
+export const CONFIG = new Constant({
+  DEBUG: true,
+  PROXY: true,
   TRAVAR: false,
   DRAW: false
-}
+}, true);
 
-export const BUTTON_STATE = {
+export const BUTTON_STATE = new Constant({
   PRESSED:            Symbol('button.pressed'),
   RELEASED:           Symbol('button.released'),
-}
+});
 
-export const EVENTS = {
+export const EVENTS = new Constant({
   KEY_PRESSED:        Symbol('event.key.pressed'),
   PAUSE:              Symbol('event.pause'),
   STATE_CHANGE:       Symbol('event.state.change'),
@@ -70,12 +74,12 @@ export const EVENTS = {
     INIT:             Symbol('event.state.init'),
     REMOVE:           Symbol('event.state.remove'),
   }
-}
+});
 
-export const TEXT_FORMAT = {
+export const TEXT_FORMAT = new Constant({
   STRING:         Symbol('text_format.string'),
   INTEGER:        Symbol('text_format.integer'),
   FLOAT:          Symbol('text_format.float'),
   MONEY:          Symbol('text_format.money'),
   MONEY_DECIMAL:  Symbol('text_format.money_decimal'),
-}
+});

@@ -1,5 +1,0 @@
-- remove AnimationManager and add Pixi.ticker
-- fix tween timer, fix tween object recursive function
-
-- update state manager  ----- Barrel
-- add new Timer         ----- Barrel

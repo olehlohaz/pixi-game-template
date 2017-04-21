@@ -8,12 +8,14 @@
 
 import './index.html'
 import { config }         from '../package.json'
-import { Device, StateManager, RendererManager }  from './core/core'
+import { loader, loaders }         from 'pixi.js'
+import { SoundManager, GameData, Device, StateManager, RendererManager }  from './core/core'
 import { SoundDemo, PreloaderScene, GameScene }        from './game/game'
 
 Device.init()
-RendererManager.resizeHandler()
-
+GameData.setVariable()
+RendererManager.init()
+SoundManager.init( loader, loaders.Resource )
 
 StateManager.addState( 'Game',      GameScene )
 StateManager.addState( 'Preloader', PreloaderScene )

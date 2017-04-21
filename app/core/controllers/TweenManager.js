@@ -27,28 +27,32 @@ class TweenManager {
   add (tween) {
     this._tweens.add( tween )
   }
-  removeFrom(elem) {
+  removeFrom( elem, dispatchComplete = false ) {
     for( const [indx, value] of this._tweens.entries() ) {
-      if(value.target == elem) {
-        this.remove( value )
+      if(value.target.tweenID === elem.tweenID) {
+        this.remove( value, dispatchComplete )
       }
     }
   }
-  remove (tween) {
+  remove ( tween, dispatchComplete = false ) {
     if(this._tweens.has(tween)) {
       this._tweens.delete(tween)
-      tween.emit(tween.EVENTS.COMPLETE)
-    }
+
+      if(dispatchComplete === true) {
+        tween.emit( tween.EVENTS.COMPLETE )
+      }
+      return true
+    } 
+    return false
   }
   update(time) {
     if (this._tweens.length === 0) {
       return false
     }
 
-
     for( let tween of this._tweens.values() ) {
       if(!tween.update( time )) {
-        this.remove( tween )
+        this.remove( tween, true )
       }
     }
 

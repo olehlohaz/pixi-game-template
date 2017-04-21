@@ -1,4 +1,4 @@
-import { utils, loader, loaders }  from 'pixi.js'
+import { utils, Resource }  from 'pixi.js'
 import { Howler, Howl }   from 'howler'
 import { EVENTS }         from '../core'
 
@@ -10,9 +10,13 @@ class SoundManager extends utils.EventEmitter {
 
     super()
 
+    
+  }
+  init( loader, Resource ) {
     this.listAudioExtensions = ['wav', 'mp3', 'ogg', 'ac3', 'm4a', 'webm']
 
-    const Resource = PIXI.loaders.Resource
+    this.Resource = Resource
+    this.loader = loader
 
     for(const ext of this.listAudioExtensions) {
       Resource.setExtensionLoadType( ext, Resource.LOAD_TYPE.AUDIO )
@@ -78,11 +82,11 @@ class SoundManager extends utils.EventEmitter {
 
     return function(resource, next) {
 
-      if(resource.loadType === loaders.Resource.LOAD_TYPE.AUDIO) {
+      if(resource.loadType === self.Resource.LOAD_TYPE.AUDIO) {
         const ext = self.getExtension(resource.url)
         if(ext === '*') {
           resource.isComplete = true
-          resource.isAudio = true
+          resource.type = self.Resource.TYPE.AUDIO
         }
       }
 
@@ -95,7 +99,9 @@ class SoundManager extends utils.EventEmitter {
 
     return function(resource, next) {
 
-      if ( resource && resource.isJson && resource.data && resource.data.resources ) {
+      // console.log(resource.isJson, resource.data.resources)
+
+      if ( resource && resource.type === self.Resource.TYPE.JSON && resource.data && resource.data.resources ) {
         
         const path = self.getPath(resource.url)
 
@@ -113,7 +119,7 @@ class SoundManager extends utils.EventEmitter {
 
         resource.data.once( 'load', next )
 
-      } if(resource && resource.isAudio) {
+      } else if(resource && resource.type === self.Resource.TYPE.AUDIO) {
 
         let audioFiles = [ resource.url ]
         const path = self.removePathExtension(resource.url)
@@ -160,8 +166,8 @@ class SoundManager extends utils.EventEmitter {
     return [
       data.start * 1000, (data.end - data.start) * 1000, data.loop
     ];
-  }
-  
+  } 
 }
+
 
 export default new SoundManager()

@@ -1,5 +1,5 @@
-import {TweenManager}  from '../core'
-import { utils, ticker, TARGET_FPMS }  from 'pixi.js'
+import { TweenManager }  from '../core'
+import { utils, ticker, settings }  from 'pixi.js'
 
 /**
  * Tween.js
@@ -23,8 +23,15 @@ export default class Tween extends utils.EventEmitter {
 
 
     this._object = object
+    
+    if( !this._object.tweenID ) {
+      this._object.tweenID = Symbol('tween.id')
+    }
     this.reset()
   
+  }
+  get id() {
+    return this._id
   }
 
   get target() {
@@ -59,7 +66,6 @@ export default class Tween extends utils.EventEmitter {
     this._duration = duration
 
     for (const k of Object.keys(properties)) {
-      // console.log(properties[k], typeof(properties[k]), (properties[k] instanceof Array) )
       this._valuesEnd.set( k, properties[k] )
     }
 
@@ -81,7 +87,6 @@ export default class Tween extends utils.EventEmitter {
 
     for (const [property, value] of this._valuesEnd.entries() ) {
 
-      // console.log(property, value)
       // Check if an Array was provided as property value
       if (value instanceof Array) {
 
@@ -130,11 +135,11 @@ export default class Tween extends utils.EventEmitter {
 
   stop() {
     if (!this._isPlaying) {
-      return this;
+      return this
     }
 
     TweenManager.remove(this)
-    this._isPlaying = false;
+    this._isPlaying = false
 
     if (this._onStopCallback !== null) {
       this._onStopCallback.call(this._object)
@@ -202,7 +207,7 @@ export default class Tween extends utils.EventEmitter {
     return this
   }
   offComplete(callback) {
-    this.off(this.EVENTS.REPEAT, callback)
+    this.off(this.EVENTS.COMPLETE, callback)
     return this
   }
   onStop (callback) {
@@ -261,8 +266,8 @@ export default class Tween extends utils.EventEmitter {
       return false
     }
 
-    this._currentTime += deltaTime/TARGET_FPMS
-    this._relativeTime += deltaTime/TARGET_FPMS
+    this._currentTime += deltaTime/settings.TARGET_FPMS
+    this._relativeTime += deltaTime/settings.TARGET_FPMS
 
     if (this._currentTime < this._startTime) {
       return true;

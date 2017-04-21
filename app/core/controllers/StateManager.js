@@ -14,15 +14,24 @@ class StateManager {
     this.activeStates = new Map()
     this.states = new Map()
 
-    this.stageContainer = new Container()
-    this.stageContainer.position.set(RendererManager.center.x, RendererManager.center.y)
+  }
 
+  init() {
+    this.stageContainer = new Container()
+    this.stageContainer.position.set( RendererManager.center.x, RendererManager.center.y )
   }
 
   addState ( key, state ) {
     this.states.set( key, state )
   }
 
+  getState(key) {
+    if( !this.states.has( key ) ) {
+      return null
+    }
+
+    return this.states.get( key )
+  }
   
   removeActive (key) {
     if( !this.activeStates.has( key ) ) {
@@ -72,7 +81,7 @@ class StateManager {
   }
 
   setActive ( key, ...data ) {
-    this.addActive( key, true, ...data )
+    return this.addActive( key, true, ...data )
   }
 
   switchFade (newKey, time = 1000) {
@@ -95,8 +104,6 @@ class StateManager {
 
     return tweenOld
   }
-
 }
-
 
 export default new StateManager()

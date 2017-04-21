@@ -5,14 +5,39 @@
  *
  */
  
+
+class VariableStorage {
+
+  constructor() {
+    this.data = new Object()
+  }
+
+  setItem(name, value) {
+    this.data[name] = value
+  }
+  getItem(name) {
+    return this.data[name]
+  }
+  clear() {
+    this.data = new Object()
+  }
+
+}
+
 class GameData {
 
   constructor() {
 
     this.enabled = ( typeof(Storage) !== "undefined" )
-
-    this.storage = window.localStorage
+    this.setStorage()
   } 
+  setStorage() {
+    this.storage = window.localStorage
+  }
+  setVariable() {
+    this.storage = new VariableStorage()
+  }
+
 
   toObject( value ) {
     if(value === null) {
@@ -26,13 +51,14 @@ class GameData {
   }
 
   set( name, value ) {
-    const type = (typeof value)
-
     this.storage.setItem( name, this.toString( value ) )
   }
 
   get( name ) {
     const data = this.storage.getItem( name )
+    if( !data ) {
+      return null
+    }
 
     return this.toObject( data )
   }
@@ -40,7 +66,6 @@ class GameData {
   clean( value = null ) {
     this.storage.clear(value)
   }
-
-
 }
+
 export default new GameData()

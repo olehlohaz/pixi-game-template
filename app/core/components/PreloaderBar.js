@@ -1,4 +1,4 @@
-import {RendererManager, Tween, TWEEN } from '../core'
+import { TweenManager, RendererManager, Tween, TWEEN } from '../core'
 
 import { Sprite, Rectangle, Texture, Container, Graphics } from 'pixi.js'
 
@@ -11,14 +11,16 @@ import { Sprite, Rectangle, Texture, Container, Graphics } from 'pixi.js'
  */
 export default class PreloaderBar extends Container {
 
-  constructor(colorLoader, colorDot) {
+  constructor(colorLoader, colorDot, useImage = false) {
     
     super()
 
 
-    const logo = Sprite.fromImage('logo.png')
-    this.addChild( logo )
-    logo.anchor.set(0.5)
+    if(useImage) {
+        const logo = Sprite.fromImage('logo.png')
+        this.addChild( logo )
+        logo.anchor.set(0.5)
+    }
 
       
     const texture = Texture.fromImage('assets/preloader.png')
@@ -35,20 +37,18 @@ export default class PreloaderBar extends Container {
     loaderDot.tint = colorDot // 0xffca00 // color dot
 
 
-    const imageMask = this.createMask(1, 1, 771, 37)
-    imageMask.scale.set(0.1, 1)
+    this.imageMask = this.createMask(1, 1, 771, 37)
+    this.imageMask.scale.set(0.1, 1)
 
 
-    loaderBg.position.y = loaderFront.position.y = loaderDot.position.y = imageMask.position.y = RendererManager.height * 0.3
+    loaderBg.position.y = loaderFront.position.y = loaderDot.position.y = this.imageMask.position.y = RendererManager.height * 0.3
 
 
-    loaderFront.mask = imageMask
-    loaderDot.mask = imageMask
+    loaderFront.mask = this.imageMask
+    loaderDot.mask = this.imageMask
 
     loaderDot.position.x = -loaderFront.width * 0.5
     new Tween(loaderDot).to({ x: loaderFront.width * 0.5 }, 900).repeat(-1).start()
-
-    this.tween = new Tween(imageMask)
 
   }
 
@@ -78,7 +78,9 @@ export default class PreloaderBar extends Container {
     
     const scale = Math.min(value*0.01, 1)
 
-    this.tween.to({scale: {x: scale} }, 200).start()
+    TweenManager.removeFrom(this.imageMask)
+
+    new Tween(this.imageMask.scale).to( {x: scale }, 200).start()
   }
 
 }
